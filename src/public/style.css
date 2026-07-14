@@ -1,0 +1,133 @@
+:root {
+  --max-width: 40rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 1.25rem;
+  background: #ffffff;
+  color: #000000;
+  font-family: Times, 'Times New Roman', serif;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+header, main, footer {
+  max-width: var(--max-width);
+}
+
+h1 {
+  font-size: 1.9rem;
+  margin: 0;
+}
+
+h1 a {
+  color: #000000;
+  text-decoration: none;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+.tagline {
+  font-style: italic;
+  margin: 0.15rem 0 0.6rem;
+}
+
+.simple-nav {
+  margin: 0.5rem 0;
+}
+
+.inline-form {
+  display: inline;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #0000ee;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:visited,
+.link-button:hover {
+  color: #0000ee;
+}
+
+a {
+  color: #0000ee;
+}
+
+a:visited {
+  color: #551a8b;
+}
+
+a:active {
+  color: #ff0000;
+}
+
+hr {
+  margin: 0.75rem 0;
+}
+
+.category-list,
+.sub-list {
+  margin: 0.35rem 0;
+}
+
+.sub-list {
+  margin-top: 0.25rem;
+  margin-bottom: 0.9rem;
+}
+
+.thoughts {
+  font-style: italic;
+}
+
+.error {
+  color: #ff0000;
+}
+
+.stacked-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: 24rem;
+  margin-top: 0.75rem;
+}
+
+.stacked-form label {
+  font-weight: bold;
+  margin-top: 0.4rem;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 0.75rem;
+}
+
+th, td {
+  border: 1px solid #000000;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.admin-actions form {
+  display: inline;
+}
+
+footer small {
+  color: #444444;
+}
