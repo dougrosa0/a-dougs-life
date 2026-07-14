@@ -1,15 +1,20 @@
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const { createPublicRouter } = require('./routes/public');
 const { createAuthRouter } = require('./routes/auth');
 const { createAdminRouter } = require('./routes/admin');
+const { createHealthRouter } = require('./routes/health');
 
-function createApp({ bookStore, sessionSecret, secureCookies }) {
+function createApp({ bookStore, pool, sessionSecret, secureCookies }) {
   const app = express();
+
+  app.use(createHealthRouter(pool));
 
   app.use(
     session({
+      store: new pgSession({ pool, tableName: 'session', createTableIfMissing: false }),
       secret: sessionSecret,
       resave: false,
       saveUninitialized: false,

@@ -1,52 +1,11 @@
-const path = require('path');
-const fs = require('fs');
-const Database = require('better-sqlite3');
+const { Pool } = require('pg');
 
-const SCHEMA = `
-  CREATE TABLE IF NOT EXISTS books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    author TEXT NOT NULL,
-    status TEXT NOT NULL CHECK (status IN ('want_to_read', 'reading', 'finished')),
-    rating INTEGER CHECK (rating IS NULL OR (rating BETWEEN 1 AND 5)),
-    thoughts TEXT,
-    started_on TEXT,
-    finished_on TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-  );
-`;
-
-function createDb(dbPath) {
-  if (dbPath !== ':memory:') {
-    fs.mkdirSync(path.dirname(dbPath), { recursive: true });
-  }
-  const db = new Database(dbPath);
-  db.pragma('journal_mode = WAL');
-  db.exec(SCHEMA);
-  return db;
+function createDb(connectionString) {
+  return new Pool({ connectionString });
 }
 
-function createBookStore(db) {
-  const insert = db.prepare(`
-    INSERT INTO books (title, author, status, rating, thoughts, started_on, finished_on)
-    VALUES (@title, @author, @status, @rating, @thoughts, @started_on, @finished_on)
-  `);
-  const update = db.prepare(`
-    UPDATE books SET
-      title = @title,
-      author = @author,
-      status = @status,
-      rating = @rating,
-      thoughts = @thoughts,
-      started_on = @started_on,
-      finished_on = @finished_on
-    WHERE id = @id
-  `);
-  const remove = db.prepare('DELETE FROM books WHERE id = ?');
-  const findById = db.prepare('SELECT * FROM books WHERE id = ?');
-  const listAll = db.prepare('SELECT * FROM books ORDER BY created_at DESC, id DESC');
-
-  const normalize = (book) => ({
+function normalize(book) {
+  return {
     title: book.title,
     author: book.author,
     status: book.status,
@@ -54,25 +13,48 @@ function createBookStore(db) {
     thoughts: book.thoughts || null,
     started_on: book.started_on || null,
     finished_on: book.finished_on || null,
-  });
+  };
+}
 
+function createBookStore(pool) {
   return {
-    list() {
-      return listAll.all();
+    async list() {
+      const { rows } = await pool.query('SELECT * FROM books ORDER BY created_at DESC, id DESC');
+      return rows;
     },
-    get(id) {
-      return findById.get(id);
+    async get(id) {
+      const { rows } = await pool.query('SELECT * FROM books WHERE id = $1', [id]);
+      return rows[0];
     },
-    create(book) {
-      const info = insert.run(normalize(book));
-      return findById.get(info.lastInsertRowid);
+    async create(book) {
+      const b = normalize(book);
+      const { rows } = await pool.query(
+        `INSERT INTO books (title, author, status, rating, thoughts, started_on, finished_on)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING *`,
+        [b.title, b.author, b.status, b.rating, b.thoughts, b.started_on, b.finished_on]
+      );
+      return rows[0];
     },
-    update(id, book) {
-      update.run({ ...normalize(book), id });
-      return findById.get(id);
+    async update(id, book) {
+      const b = normalize(book);
+      const { rows } = await pool.query(
+        `UPDATE books SET
+           title = $1,
+           author = $2,
+           status = $3,
+           rating = $4,
+           thoughts = $5,
+           started_on = $6,
+           finished_on = $7
+         WHERE id = $8
+         RETURNING *`,
+        [b.title, b.author, b.status, b.rating, b.thoughts, b.started_on, b.finished_on, id]
+      );
+      return rows[0];
     },
-    delete(id) {
-      remove.run(id);
+    async delete(id) {
+      await pool.query('DELETE FROM books WHERE id = $1', [id]);
     },
   };
 }

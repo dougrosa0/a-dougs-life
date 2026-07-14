@@ -9,9 +9,9 @@ COPY src ./src
 COPY scripts ./scripts
 
 ENV PORT=3000
-ENV DB_PATH=/app/data/a-dougs-life.sqlite
 EXPOSE 3000
 
-VOLUME ["/app/data"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:'+(process.env.PORT||3000)+'/healthz', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 
 CMD ["node", "src/server.js"]
