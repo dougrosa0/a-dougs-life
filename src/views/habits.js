@@ -24,6 +24,10 @@ const HABITS = [
     detail:
       'Paycheck direct-deposits to cover expenses; the rest auto-splits — a fixed amount to savings, the remainder into broad index funds. Long-term and hands-off.',
   },
+  {
+    name: 'Call home on Sundays',
+    detail: 'Call my parents every Sunday — no excuses.',
+  },
 ];
 
 function habitsPage({ isAdmin } = {}) {
