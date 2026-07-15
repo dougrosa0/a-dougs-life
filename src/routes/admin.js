@@ -5,11 +5,13 @@ const { adminBookFormPage } = require('../views/admin-book-form');
 const { asyncHandler } = require('../lib/async-handler');
 
 const VALID_STATUSES = new Set(['want_to_read', 'reading', 'finished']);
+const VALID_CATEGORIES = new Set(['fun', 'learning']);
 
 function validateBook(body) {
   if (!body.title || !body.title.trim()) return 'Title is required.';
   if (!body.author || !body.author.trim()) return 'Author is required.';
   if (!VALID_STATUSES.has(body.status)) return 'Invalid status.';
+  if (!VALID_CATEGORIES.has(body.category)) return 'Invalid category.';
   if (body.rating && !['1', '2', '3', '4', '5', ''].includes(body.rating)) return 'Invalid rating.';
   return null;
 }

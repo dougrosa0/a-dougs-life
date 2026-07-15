@@ -1,6 +1,7 @@
 const express = require('express');
 const { homePage } = require('../views/home');
 const { booksPage } = require('../views/books');
+const { habitsPage } = require('../views/habits');
 const { asyncHandler } = require('../lib/async-handler');
 
 function createPublicRouter(bookStore) {
@@ -8,6 +9,10 @@ function createPublicRouter(bookStore) {
 
   router.get('/', (req, res) => {
     res.send(homePage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
+  });
+
+  router.get('/habits', (req, res) => {
+    res.send(habitsPage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
   });
 
   router.get(

@@ -3,13 +3,14 @@ const { layout } = require('./layout');
 function homePage({ isAdmin } = {}) {
   const body = `
     <p>
-      Hi, I'm Doug — a software engineering manager who still likes to keep his hands on the keyboard.
-      This page is a small, open-source project: a record of things I'm into, starting with the
-      <a href="/books">books I've been reading</a>.
+      Hi, I'm Doug — an avid learner, interested in the intersection of technology and business.
+      Lover of the outdoors: skiing, surfing, camping, hiking, you name it. Also a washed-up soccer
+      player who still enjoys adult leagues.
     </p>
     <p>
-      Thanks for stopping by. Sign my <s>guestbook</s>... okay, there's no guestbook. But feel free to
-      look around.
+      This page is a small, open-source project: a record of things I'm into — the
+      <a href="/books">books I've been reading</a> and the <a href="/habits">habits</a> I lean on.
+      Thanks for stopping by; feel free to look around.
     </p>
   `;
   return layout({ title: undefined, body, isAdmin });

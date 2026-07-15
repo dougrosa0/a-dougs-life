@@ -1,6 +1,12 @@
 const { layout } = require('./layout');
 const { escapeHtml } = require('./escape');
 
+const CATEGORY_ORDER = ['fun', 'learning'];
+const CATEGORY_LABELS = {
+  fun: 'For Fun',
+  learning: 'For Learning',
+};
+
 const STATUS_ORDER = ['reading', 'want_to_read', 'finished'];
 const STATUS_LABELS = {
   reading: 'Currently Reading',
@@ -14,31 +20,42 @@ function renderBook(book) {
   return `<li><b>${escapeHtml(book.title)}</b> by ${escapeHtml(book.author)}${rating}${thoughts}</li>`;
 }
 
-function booksPage({ books, isAdmin } = {}) {
+function renderStatusGroups(books) {
   const byStatus = STATUS_ORDER.map((status) => ({
     status,
     label: STATUS_LABELS[status],
     items: books.filter((book) => book.status === status),
   })).filter((group) => group.items.length > 0);
 
-  const content = byStatus.length
-    ? `<ul class="category-list">${byStatus
-        .map(
-          (group) => `
-            <li>
-              <b>${group.label}</b> (${group.items.length})
-              <ul class="sub-list">
-                ${group.items.map(renderBook).join('')}
-              </ul>
-            </li>
-          `
-        )
-        .join('')}</ul>`
-    : '<p>No books yet — check back soon.</p>';
+  if (!byStatus.length) {
+    return '<p>Nothing here yet — check back soon.</p>';
+  }
+
+  return `<ul class="category-list">${byStatus
+    .map(
+      (group) => `
+        <li>
+          <b>${group.label}</b> (${group.items.length})
+          <ul class="sub-list">
+            ${group.items.map(renderBook).join('')}
+          </ul>
+        </li>
+      `
+    )
+    .join('')}</ul>`;
+}
+
+function booksPage({ books = [], isAdmin } = {}) {
+  const sections = CATEGORY_ORDER.map(
+    (category) => `
+      <h3>${CATEGORY_LABELS[category]}</h3>
+      ${renderStatusGroups(books.filter((book) => book.category === category))}
+    `
+  ).join('');
 
   const body = `
     <h2>Books</h2>
-    ${content}
+    ${sections}
   `;
 
   return layout({ title: 'Books', body, isAdmin });

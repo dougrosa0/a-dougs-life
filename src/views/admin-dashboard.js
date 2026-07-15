@@ -7,12 +7,18 @@ const STATUS_LABELS = {
   finished: 'Finished',
 };
 
+const CATEGORY_LABELS = {
+  fun: 'For Fun',
+  learning: 'For Learning',
+};
+
 function renderRow(book) {
   return `
     <tr>
       <td>${escapeHtml(book.title)}</td>
       <td>${escapeHtml(book.author)}</td>
       <td>${STATUS_LABELS[book.status] || book.status}</td>
+      <td>${CATEGORY_LABELS[book.category] || book.category}</td>
       <td class="admin-actions">
         <a href="/admin/books/${book.id}/edit">Edit</a>
         <form action="/admin/books/${book.id}/delete" method="post" onsubmit="return confirm('Delete this book?');">
@@ -26,14 +32,14 @@ function renderRow(book) {
 function adminDashboardPage({ books }) {
   const rows = books.length
     ? books.map(renderRow).join('')
-    : '<tr><td colspan="4">No books yet.</td></tr>';
+    : '<tr><td colspan="5">No books yet.</td></tr>';
 
   const body = `
     <h1>Admin</h1>
     <p><a href="/admin/books/new">+ Add a book</a></p>
     <table>
       <thead>
-        <tr><th>Title</th><th>Author</th><th>Status</th><th></th></tr>
+        <tr><th>Title</th><th>Author</th><th>Status</th><th>Category</th><th></th></tr>
       </thead>
       <tbody>
         ${rows}

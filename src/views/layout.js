@@ -6,18 +6,19 @@ function layout({ title, body, isAdmin = false }) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title ? `${title} — A Dougs Life` : 'A Dougs Life'}</title>
+  <title>${title ? `${title} — A Doug's Life` : "A Doug's Life"}</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <header>
-    <h1><a href="/">A Dougs Life</a></h1>
+    <h1><a href="/">A Doug's Life</a></h1>
     <p class="tagline"><i>(a personal home page)</i></p>
     <hr>
     <p class="simple-nav">
       [ <a href="/">Home</a>
       | <a href="/books">Books</a>
+      | <a href="/habits">Habits</a>
       ${
         isAdmin
           ? '| <a href="/admin">Admin</a> | <form action="/logout" method="post" class="inline-form"><button type="submit" class="link-button">Logout</button></form>'

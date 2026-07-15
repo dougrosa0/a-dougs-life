@@ -59,3 +59,16 @@ test('delete removes the book', async () => {
   await store.delete(book.id);
   assert.equal(await store.get(book.id), undefined);
 });
+
+test('category defaults to fun and can be set to learning', async () => {
+  const fun = await store.create({ title: 'Dune', author: 'Herbert', status: 'finished' });
+  assert.equal(fun.category, 'fun');
+
+  const learning = await store.create({
+    title: 'Designing Data-Intensive Applications',
+    author: 'Kleppmann',
+    status: 'reading',
+    category: 'learning',
+  });
+  assert.equal(learning.category, 'learning');
+});

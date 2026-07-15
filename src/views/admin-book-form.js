@@ -7,6 +7,11 @@ const STATUSES = [
   { value: 'finished', label: 'Finished' },
 ];
 
+const CATEGORIES = [
+  { value: 'fun', label: 'For Fun' },
+  { value: 'learning', label: 'For Learning' },
+];
+
 function option(value, label, selected) {
   return `<option value="${value}" ${selected === value ? 'selected' : ''}>${label}</option>`;
 }
@@ -30,6 +35,11 @@ function adminBookFormPage({ book = {}, isNew = true, error } = {}) {
       <label for="status">Status</label>
       <select id="status" name="status">
         ${STATUSES.map((s) => option(s.value, s.label, book.status || 'want_to_read')).join('')}
+      </select>
+
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        ${CATEGORIES.map((c) => option(c.value, c.label, book.category || 'fun')).join('')}
       </select>
 
       <label for="rating">Rating</label>

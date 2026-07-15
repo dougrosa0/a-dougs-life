@@ -15,5 +15,5 @@ const app = createApp({
 });
 
 app.listen(port, () => {
-  console.log(`A Dougs Life listening on port ${port}`);
+  console.log(`A Doug's Life listening on port ${port}`);
 });

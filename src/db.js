@@ -9,6 +9,7 @@ function normalize(book) {
     title: book.title,
     author: book.author,
     status: book.status,
+    category: book.category === '' || book.category === undefined ? 'fun' : book.category,
     rating: book.rating === '' || book.rating === undefined ? null : Number(book.rating),
     thoughts: book.thoughts || null,
     started_on: book.started_on || null,
@@ -29,10 +30,10 @@ function createBookStore(pool) {
     async create(book) {
       const b = normalize(book);
       const { rows } = await pool.query(
-        `INSERT INTO books (title, author, status, rating, thoughts, started_on, finished_on)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `INSERT INTO books (title, author, status, category, rating, thoughts, started_on, finished_on)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
-        [b.title, b.author, b.status, b.rating, b.thoughts, b.started_on, b.finished_on]
+        [b.title, b.author, b.status, b.category, b.rating, b.thoughts, b.started_on, b.finished_on]
       );
       return rows[0];
     },
@@ -43,13 +44,14 @@ function createBookStore(pool) {
            title = $1,
            author = $2,
            status = $3,
-           rating = $4,
-           thoughts = $5,
-           started_on = $6,
-           finished_on = $7
-         WHERE id = $8
+           category = $4,
+           rating = $5,
+           thoughts = $6,
+           started_on = $7,
+           finished_on = $8
+         WHERE id = $9
          RETURNING *`,
-        [b.title, b.author, b.status, b.rating, b.thoughts, b.started_on, b.finished_on, id]
+        [b.title, b.author, b.status, b.category, b.rating, b.thoughts, b.started_on, b.finished_on, id]
       );
       return rows[0];
     },
