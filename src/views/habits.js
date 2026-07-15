@@ -26,7 +26,7 @@ const HABITS = [
   },
   {
     name: 'Call home on Sundays',
-    detail: 'Call my parents every Sunday — no excuses.',
+    detail: 'Call my parents every Sunday.',
   },
 ];
 
