@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+# Keyless auth to GCP needs an OIDC token.
+permissions:
+  contents: read
+  id-token: write
+
+# One in-flight run per ref; a newer push supersedes an older one.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 1. Unit/integration tests against a real Postgres.
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: a_dougs_life
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/a_dougs_life
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/a_dougs_life_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Create the test database
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d postgres -c 'CREATE DATABASE a_dougs_life_test'
+      - name: Apply migrations (main DB) — gate that migrations are clean
+        run: npm run migrate
+      - name: Test
+        run: npm test
+
+  # 2. Build the runtime image and smoke-test it against real Postgres.
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: a_dougs_life
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build app + migrate images
+        run: |
+          docker build -t adl-app:ci -f Dockerfile .
+          docker build -t adl-migrate:ci -f Dockerfile.migrate .
+      - name: Migrate the DB with the migrate image
+        run: |
+          docker run --rm --network host \
+            -e DATABASE_URL='postgres://postgres:postgres@localhost:5432/a_dougs_life' \
+            adl-migrate:ci
+      - name: Start the app image
+        run: |
+          docker run -d --name adl-app --network host \
+            -e DATABASE_URL='postgres://postgres:postgres@localhost:5432/a_dougs_life' \
+            -e SESSION_SECRET='ci-smoke-secret' \
+            -e PORT=8080 \
+            adl-app:ci
+      - name: Smoke-test /healthz
+        run: |
+          for i in $(seq 1 20); do
+            if curl -fsS http://localhost:8080/healthz; then echo; echo "healthz OK"; exit 0; fi
+            sleep 2
+          done
+          echo "healthz never became healthy"; docker logs adl-app; exit 1
+      - name: Teardown
+        if: always()
+        run: docker rm -f adl-app || true
+
+  # 3. Push images to Artifact Registry (master only).
+  push:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+      - name: Build & push app + migrate images
+        run: |
+          APP="${{ vars.GCP_AR_REPO }}/app"
+          MIG="${{ vars.GCP_AR_REPO }}/migrate"
+          docker build -t "$APP:${{ github.sha }}" -t "$APP:latest" -f Dockerfile .
+          docker build -t "$MIG:${{ github.sha }}" -t "$MIG:latest" -f Dockerfile.migrate .
+          docker push "$APP:${{ github.sha }}"
+          docker push "$APP:latest"
+          docker push "$MIG:${{ github.sha }}"
+          docker push "$MIG:latest"
+
+  # 4. Migrate the real DB (in-VPC job), deploy a no-traffic candidate, smoke-test
+  #    it, then shift traffic. A failed smoke test leaves the old revision serving.
+  deploy:
+    needs: push
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      - name: Run DB migrations (Cloud Run Job, inside the VPC)
+        run: |
+          gcloud run jobs update adl-migrate \
+            --image "${{ vars.GCP_AR_REPO }}/migrate:${{ github.sha }}" \
+            --region "${{ vars.GCP_REGION }}"
+          gcloud run jobs execute adl-migrate --region "${{ vars.GCP_REGION }}" --wait
+
+      - name: Deploy candidate revision (no traffic)
+        id: candidate
+        run: |
+          SHORT="$(echo "${{ github.sha }}" | cut -c1-8)"
+          gcloud run deploy "${{ vars.CLOUD_RUN_SERVICE }}" \
+            --image "${{ vars.GCP_AR_REPO }}/app:${{ github.sha }}" \
+            --region "${{ vars.GCP_REGION }}" \
+            --no-traffic \
+            --tag "candidate-$SHORT"
+          CAND_URL="$(gcloud run services describe "${{ vars.CLOUD_RUN_SERVICE }}" \
+            --region "${{ vars.GCP_REGION }}" --format=json \
+            | jq -r --arg t "candidate-$SHORT" '.status.traffic[] | select(.tag==$t) | .url')"
+          echo "url=$CAND_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke-test the candidate
+        run: |
+          set -e
+          curl -fsS "${{ steps.candidate.outputs.url }}/healthz"
+          curl -fsS -o /dev/null "${{ steps.candidate.outputs.url }}/"
+
+      - name: Shift 100% traffic to the new revision
+        run: |
+          gcloud run services update-traffic "${{ vars.CLOUD_RUN_SERVICE }}" \
+            --region "${{ vars.GCP_REGION }}" --to-latest

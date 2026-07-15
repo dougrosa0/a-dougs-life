@@ -1,0 +1,4 @@
+# Normalize line endings. Shell scripts MUST stay LF — they run on Linux VMs
+# (a CRLF shebang breaks execution).
+* text=auto
+*.sh text eol=lf
