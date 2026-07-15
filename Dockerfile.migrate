@@ -1,0 +1,14 @@
+# Runs database migrations as a Cloud Run Job from inside the VPC (the DB is
+# private). Kept separate from the runtime image because node-pg-migrate is a
+# devDependency deliberately excluded from production.
+FROM node:20-slim
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY migrations ./migrations
+
+# node-pg-migrate reads DATABASE_URL and applies everything in ./migrations.
+CMD ["npm", "run", "migrate"]

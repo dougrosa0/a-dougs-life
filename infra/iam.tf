@@ -66,3 +66,19 @@ resource "google_project_iam_member" "db_vm_logging" {
   role    = "roles/logging.logWriter"
   member  = "serviceAccount:${google_service_account.db_vm.email}"
 }
+
+# --- Cloud Run image pulls --------------------------------------------------
+
+data "google_project" "this" {
+  project_id = var.project_id
+}
+
+# The Cloud Run service agent pulls the app/migrate images. Same-project access
+# is usually auto-granted, but making it explicit avoids first-deploy image-pull
+# failures. Scoped to just the adl repo.
+resource "google_artifact_registry_repository_iam_member" "run_agent_reader" {
+  location   = google_artifact_registry_repository.app.location
+  repository = google_artifact_registry_repository.app.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:service-${data.google_project.this.number}@serverless-robot-prod.iam.gserviceaccount.com"
+}
