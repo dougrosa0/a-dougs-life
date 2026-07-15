@@ -8,7 +8,7 @@ const HABITS = [
   },
   {
     name: 'Creative mornings',
-    detail: "Do something creative before work — right now that's playing guitar.",
+    detail: "Do something creative before work; right now that's playing guitar.",
   },
   {
     name: 'Exercise after work',
@@ -17,12 +17,17 @@ const HABITS = [
   {
     name: 'Daily journal',
     detail:
-      "Hand-write a log of what I did that day — nothing about work allowed, so there's always something meaningful to write.",
+      "Hand-write a log of what I did that day; nothing about work allowed, so there's always something meaningful to write.",
   },
   {
     name: 'Automate savings',
     detail:
-      'Paycheck direct-deposits to cover expenses; the rest auto-splits — a fixed amount to savings, the remainder into broad index funds. Long-term and hands-off.',
+      'Paycheck direct-deposits to cover expenses; the rest auto-splits into a fixed amount to savings and the remainder into broad index funds. Long-term and hands-off.',
+  },
+  {
+    name: 'Two to-do lists',
+    detail:
+      "One for work, one for personal. I run my priorities off these lists; without them the commitments pile up and I get anxious, so keeping them is how I stay focused and effective.",
   },
   {
     name: 'Call home on Sundays',
@@ -31,11 +36,11 @@ const HABITS = [
 ];
 
 function habitsPage({ isAdmin } = {}) {
-  const items = HABITS.map((h) => `<li><b>${h.name}</b> — ${h.detail}</li>`).join('');
+  const items = HABITS.map((h) => `<li><b>${h.name}:</b> ${h.detail}</li>`).join('');
 
   const body = `
     <h2>Habits</h2>
-    <p>A few daily habits I keep — small rules that make sure every day has something meaningful in it.</p>
+    <p>A few daily habits I keep; small rules that make sure every day has something meaningful in it.</p>
     <ul class="category-list">${items}</ul>
   `;
 

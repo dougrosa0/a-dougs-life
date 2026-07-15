@@ -6,7 +6,7 @@ function layout({ title, body, isAdmin = false }) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title ? `${title} — A Doug's Life` : "A Doug's Life"}</title>
+  <title>${title ? `${title} - A Doug's Life` : "A Doug's Life"}</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/style.css">
 </head>

@@ -15,7 +15,7 @@ const STATUS_LABELS = {
 };
 
 function renderBook(book) {
-  const rating = book.rating ? ` — Rating: ${'*'.repeat(book.rating)}${'-'.repeat(5 - book.rating)}` : '';
+  const rating = book.rating ? ` (Rating: ${'*'.repeat(book.rating)}${'-'.repeat(5 - book.rating)})` : '';
   const thoughts = book.thoughts ? ` <span class="thoughts">"${escapeHtml(book.thoughts)}"</span>` : '';
   return `<li><b>${escapeHtml(book.title)}</b> by ${escapeHtml(book.author)}${rating}${thoughts}</li>`;
 }
@@ -28,7 +28,7 @@ function renderStatusGroups(books) {
   })).filter((group) => group.items.length > 0);
 
   if (!byStatus.length) {
-    return '<p>Nothing here yet — check back soon.</p>';
+    return '<p>Nothing here yet. Check back soon.</p>';
   }
 
   return `<ul class="category-list">${byStatus

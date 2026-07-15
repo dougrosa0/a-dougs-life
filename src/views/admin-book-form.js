@@ -19,7 +19,7 @@ function option(value, label, selected) {
 function adminBookFormPage({ book = {}, isNew = true, error } = {}) {
   const action = isNew ? '/admin/books' : `/admin/books/${book.id}`;
   const ratingOptions = ['', 1, 2, 3, 4, 5]
-    .map((value) => option(value, value === '' ? '—' : `${value}`, String(book.rating ?? '')))
+    .map((value) => option(value, value === '' ? 'None' : `${value}`, String(book.rating ?? '')))
     .join('');
 
   const body = `
