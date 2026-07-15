@@ -1,0 +1,7 @@
+# Copy to terraform.tfvars and adjust if the defaults don't fit.
+# All three have working defaults in variables.tf, so a plain `terraform apply`
+# with no tfvars works out of the box for the a-dougs-life project.
+
+# project_id        = "a-dougs-life"
+# region            = "us-central1"
+# state_bucket_name = "a-dougs-life-tfstate"
