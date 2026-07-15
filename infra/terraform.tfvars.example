@@ -1,0 +1,20 @@
+# Copy to terraform.tfvars (gitignored) and fill in real values.
+# In CI these are supplied as TF_VAR_* from GitHub secrets instead.
+
+# Strong random password for the Cloud SQL "app" user. Generate with:
+#   node -e "console.log(require('crypto').randomBytes(24).toString('base64url'))"
+db_password = ""
+
+# Express session signing secret (>= 32 random bytes, hex). Generate with:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+session_secret = ""
+
+# From `npm run create-admin` (pick an admin password; it prints these two).
+admin_password_hash = ""
+admin_password_salt = ""
+
+# Optional overrides (defaults shown):
+# project_id     = "a-dougs-life"
+# region         = "us-central1"
+# admin_username = "doug"
+# db_tier        = "db-f1-micro"
