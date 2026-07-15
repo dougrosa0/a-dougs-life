@@ -165,8 +165,12 @@ jobs:
       - name: Smoke-test the candidate
         run: |
           set -e
-          curl -fsS "${{ steps.candidate.outputs.url }}/healthz"
+          # Cloud Run's front end reserves /healthz externally (Cloud Run's own
+          # probes still hit it internally to gate readiness), so smoke-test real
+          # public routes instead. "/" renders the books list, which exercises the
+          # DB — a 200 here confirms both the app and the database connection.
           curl -fsS -o /dev/null "${{ steps.candidate.outputs.url }}/"
+          curl -fsS -o /dev/null "${{ steps.candidate.outputs.url }}/login"
 
       - name: Shift 100% traffic to the new revision
         run: |
