@@ -6,7 +6,13 @@ const TIMELINE = [
   {
     year: '2026',
     what:
-      'Software Engineering Manager. Restructured the team to take advantage of agentic AI coding; combined two teams into one larger team organized into feature pods. Team velocity, measured as a three-month average, doubled between January and July.',
+      'Software Engineering Manager. Restructured the team to take advantage of agentic AI coding; combined two teams into one larger team organized into feature pods. Three-month average team velocity went from 50 story points to 100 between January and July.',
+    parts: [
+      'Domain-knowledge markdown lives in the repository itself, so the whole team iterates on it and the PR tooling reads the same instructions everyone else does.',
+      'Spread the practice through pairing and demo sessions; worked through concerns with the skeptics directly instead of mandating the tools.',
+      'Kept a human in the loop. The agent asks permission for every write, and critical business operations stay under engineer oversight.',
+      'Tests first in the pipeline; write the failing test, let the agent apply the fix, then verify against the tests.',
+    ],
     learned: 'Tooling gains only reach delivery if the team structure lets them.',
   },
   {
@@ -17,6 +23,7 @@ const TIMELINE = [
       'Context efficiency; feeding more domain knowledge into each session through markdown files.',
       'Self-teaching; have the model work out how to do the job better than it did last time.',
       'Replace the process; automate what I do regularly, like reading logs, investigating codebases, and responding to tasks.',
+      'Worked across Copilot, Cursor, and ChatGPT; settled on Claude Code in the terminal as the one I reach for.',
     ],
   },
   {
@@ -24,7 +31,7 @@ const TIMELINE = [
     what:
       'Asked to scale out an additional team within a year, growing from 5 to 10 direct reports, to drive the rollout for our largest customer.',
     learned:
-      'How to work with a customer to understand what they need, and turn that into a system.',
+      'How to work with a customer to understand what they need, and deliver on solutions.',
   },
   {
     year: '2024',
@@ -45,7 +52,7 @@ const TIMELINE = [
   {
     year: '2021',
     what:
-      'Applied for and won a place on the architecture team, responsible for building and integrating microservices into the system. Promoted to senior software engineer.',
+      'Applied for and was selected on architecture team, responsible for building and integrating microservices into the system. Promoted to senior software engineer.',
     learned: 'How to learn new codebases quickly, and how to communicate with other teams.',
   },
   {
@@ -89,7 +96,7 @@ const TIMELINE = [
   {
     year: '2011',
     what: 'Activities assistant at Seven Hills, and landscaping work at Flynn Landscaping.',
-    learned: 'Work hard, for other people.',
+    learned: 'Work hard, for other people who need help.',
   },
 ];
 

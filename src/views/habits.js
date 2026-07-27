@@ -15,7 +15,7 @@ const GOALS = [
 const HABITS = [
   {
     name: 'Water before coffee',
-    detail: "No coffee until I've finished a 1 liter bottle of water.",
+    detail: "No coffee until I've finished a 1-liter bottle of water.",
   },
   {
     name: 'Creative mornings',
