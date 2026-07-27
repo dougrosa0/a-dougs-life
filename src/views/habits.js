@@ -41,6 +41,11 @@ const HABITS = [
       "One for work, one for personal. I run my priorities off these lists; without them the commitments pile up and I get anxious, so keeping them is how I stay focused and effective.",
   },
   {
+    name: 'Read before bed',
+    detail:
+      "Read two books in parallel at all times: one fiction and one non-fiction.",
+  },
+  {
     name: 'Call home on Sundays',
     detail: 'Call my parents every Sunday.',
   },
@@ -60,8 +65,7 @@ function habitsPage({ isAdmin } = {}) {
 
   const body = `
     <p>
-      A few habits I keep; small rules that make sure I'm living with intention.
-      Also, the overall goals I want to achieve in my life, through intention every day.
+      The goals I want to achieve in my life and some habits I keep to help get me there.
     </p>
 
     <h2>Goals</h2>
