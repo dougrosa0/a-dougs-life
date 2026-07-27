@@ -13,7 +13,7 @@ const TIMELINE = [
     parts: [
       'Domain knowledge as markdown, versioned in the repo',
       'Pairing and demos; skeptics convinced, not mandated',
-      'Human in the loop on every write',
+      'Human in the loop by design',
       'Failing test first, agent fixes, tests verify',
     ],
     learned: 'Tooling gains only reach delivery if the team structure lets them.',
@@ -33,7 +33,7 @@ const TIMELINE = [
     year: '2024',
     lead: 'Scaled to a second team.',
     what: "5 to 10 direct reports in a year, driving our largest customer's rollout.",
-    learned: 'Understand what a customer needs, then deliver it as a system.',
+    learned: 'Understand what a customer needs, then deliver solutions.',
   },
   {
     year: '2024',
@@ -44,20 +44,20 @@ const TIMELINE = [
   {
     year: '2023',
     lead: 'Promoted to Software Engineering Manager.',
-    what: 'Point-of-sale team converted from application-specific to full-stack.',
+    what: 'Returned to point-of-sale team and converted it from application-specific to full-stack.',
     learned: 'Fewer barriers between teams and codebases means more throughput.',
   },
   {
     year: '2022',
-    lead: 'Harvard Business School CORe.',
+    lead: 'Harvard Business School Online CORe Certificate.',
     what: 'And the release of ChatGPT.',
     learned: 'Broader business fundamentals, and a better alternative to Stack Overflow.',
   },
   {
     year: '2021',
-    lead: 'Selected for an internal architecture team.',
-    what: 'Microservices built and integrated into the platform. Promoted to senior software engineer.',
-    learned: 'Learn a new codebase fast; communicate across teams.',
+    lead: 'Promoted to senior software engineer and selected for an internal architecture team.',
+    what: 'Microservices built and integrated into the platform.',
+    learned: 'Comprehend a new codebase fast; communicate across teams.',
   },
   {
     year: '2021',
@@ -67,13 +67,14 @@ const TIMELINE = [
   },
   {
     year: '2020',
-    lead: 'Hired at PAR Technology.',
-    what: 'Customer-facing point-of-sale application.',
+    lead: 'Hired as a software engineer at PAR Technology.',
+    what: 'Started on customer-facing point-of-sale application team.',
     learned: 'What a scrum team looks like inside a SaaS business with hundreds of engineers.',
   },
   {
     year: '2019',
     lead: 'Azure Developer Associate.',
+    learned: 'Cloud development best practices.',
   },
   {
     year: '2017',
@@ -83,7 +84,7 @@ const TIMELINE = [
   },
   {
     year: '2017',
-    lead: 'B.S. Computer Engineering, minor in Mathematics.',
+    lead: 'B.S. Computer Engineering, minor in Mathematics, and varsity soccer at Union College.',
     learned: 'Balancing responsibilities.',
   },
   {
@@ -122,6 +123,7 @@ function workPage({ isAdmin } = {}) {
 
   const body = `
     <h2>My Work: a 14,000 ft view</h2>
+    <p class="lede">An engineering leader passionate about the intersection of technology and business.</p>
     <ul class="timeline">${entries}</ul>
   `;
 

@@ -90,6 +90,10 @@ hr {
   padding: 0;
 }
 
+.lede {
+  margin: 0 0 1.2rem;
+}
+
 /* Years sit in a left gutter; the spine is a border on the entry column, so
    it runs continuously as long as the entries pad rather than margin. */
 .timeline > li {
