@@ -6,7 +6,7 @@ const { layout } = require('./layout');
 const TIMELINE = [
   {
     year: '2026',
-    lead: 'Software Engineering Manager.',
+    lead: 'Current role: Software Engineering Manager.',
     what:
       'Restructured the team to take advantage of agentic AI coding; combined two teams into one larger team organized into feature pods. Three-month average team velocity went from 50 story points to 100 between January and July.',
     parts: [
@@ -43,7 +43,7 @@ const TIMELINE = [
   },
   {
     year: '2023',
-    lead: 'Promoted to engineering manager',
+    lead: 'Promoted to Software Engineering Manager',
     what:
       'over the point-of-sale team; converted the team to full-stack development instead of application specific.',
     learned: 'Reducing the barriers between teams and codebases increases throughput.',
@@ -56,7 +56,7 @@ const TIMELINE = [
   },
   {
     year: '2021',
-    lead: 'Applied for and was selected on architecture team,',
+    lead: 'Applied for and was selected on an internal architecture team,',
     what:
       'responsible for building and integrating microservices into the system. Promoted to senior software engineer.',
     learned: 'How to learn new codebases quickly, and how to communicate with other teams.',
