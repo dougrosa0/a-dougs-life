@@ -1,5 +1,6 @@
 :root {
-  --max-width: 40rem;
+  /* Content fills the window; the body margin is the only gutter. */
+  --max-width: 100%;
 }
 
 * {
@@ -33,9 +34,20 @@ h2 {
   font-size: 1.25rem;
 }
 
-.tagline {
-  font-style: italic;
-  margin: 0.15rem 0 0.6rem;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+/* The art is a photo of a page, so its off-white background would show as a
+   grey box; multiply drops it into the page white. */
+.brand-art {
+  height: 4.5rem;
+  width: auto;
+  mix-blend-mode: multiply;
 }
 
 .simple-nav {

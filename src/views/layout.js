@@ -12,8 +12,11 @@ function layout({ title, body, isAdmin = false }) {
 </head>
 <body>
   <header>
-    <h1><a href="/">A Doug's Life</a></h1>
-    <p class="tagline"><i>(a personal home page)</i></p>
+    <div class="brand">
+      <h1><a href="/">A Doug's Life</a></h1>
+      <img class="brand-art" src="/the-giving-tree.jpg"
+        alt="Line drawing of an old man sitting on a tree stump in the grass, captioned &quot;And the tree was happy.&quot;">
+    </div>
     <hr>
     <p class="simple-nav">
       [ <a href="/">Home</a>
@@ -33,6 +36,7 @@ function layout({ title, body, isAdmin = false }) {
   </main>
   <footer>
     <hr>
+    <p><small>Header illustration by Shel Silverstein, from <i>The Giving Tree</i> (1964).</small></p>
     <p><small>Source code on <a href="${GITHUB_URL}" rel="noopener">GitHub</a>. Best viewed with any browser.</small></p>
   </footer>
 </body>
