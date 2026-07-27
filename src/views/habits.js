@@ -15,23 +15,23 @@ const GOALS = [
 const HABITS = [
   {
     name: 'Water before coffee',
-    detail: "No coffee until I've finished a 1.5-liter bottle of water.",
+    detail: "No coffee until I've finished a 1 liter bottle of water.",
   },
   {
     name: 'Creative mornings',
     detail: "Do something creative before work; right now that's playing guitar.",
   },
   {
-    name: 'Exercise after work',
-    detail: 'Yoga, running, or a bodyweight workout to close out the workday.',
+    name: 'Exercise',
+    detail: 'Move my body and spend a little time outside.',
   },
   {
     name: 'Daily journal',
     detail:
-      "Hand-write a log of what I did that day; nothing about work allowed, so there's always something meaningful to write. If not, I make sure there are entries for coming days.",
+      "Hand-write a log of what I did that day; nothing about work allowed, and there should always be something meaningful to write.",
   },
   {
-    name: 'Investing',
+    name: 'Automate my savings',
     detail:
       'Paycheck direct-deposits to cover expenses; the rest auto-splits into a fixed amount to savings and the remainder into broad index funds. Long-term and hands-off.',
   },
@@ -60,7 +60,7 @@ function habitsPage({ isAdmin } = {}) {
 
   const body = `
     <p>
-      A few daily habits I keep; small rules that make sure I'm living with intention.
+      A few habits I keep; small rules that make sure I'm living with intention.
       Also, the overall goals I want to achieve in my life, through intention every day.
     </p>
 
