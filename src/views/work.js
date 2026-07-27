@@ -3,111 +3,105 @@ const { layout } = require('./layout');
 // Career timeline, newest first. Each entry is a year, what happened, and what I took from it.
 // `year` may repeat; entries are listed in the order below, so keep them newest-first.
 // `lead` is the bolded phrase that names what changed; `what` continues the same sentence.
+// Keep entries short. This page is a prompt for conversation, not a transcript of one.
 const TIMELINE = [
   {
     year: '2026',
     lead: 'Current role: Software Engineering Manager.',
     what:
-      'Restructured the team to take advantage of agentic AI coding; combined two teams into one larger team organized into feature pods. Three-month average team velocity went from 50 story points to 100 between January and July.',
+      'Two teams merged into feature pods built for agentic AI coding. Velocity 50 to 100 story points.',
     parts: [
-      'Domain-knowledge markdown lives in the repository itself, so the whole team iterates on it and the PR tooling reads the same instructions everyone else does.',
-      'Spread the practice through pairing and demo sessions; worked through concerns with the skeptics directly instead of mandating the tools.',
-      'Kept a human in the loop. The agent asks permission for every write, and critical business operations stay under engineer oversight.',
-      'Tests first in the pipeline; write the failing test, let the agent apply the fix, then verify against the tests.',
+      'Domain knowledge as markdown, versioned in the repo',
+      'Pairing and demos; skeptics convinced, not mandated',
+      'Human in the loop on every write',
+      'Failing test first, agent fixes, tests verify',
     ],
     learned: 'Tooling gains only reach delivery if the team structure lets them.',
   },
   {
     year: '2025',
     lead: 'Claude Code released.',
-    what: 'Learned agentic AI coding techniques to improve how code gets read and written.',
+    what: 'Rebuilt how I read and write code.',
     parts: [
-      'Context efficiency; feeding more domain knowledge into each session through markdown files.',
-      'Self-teaching; have the model work out how to do the job better than it did last time.',
-      'Replace the process; automate what I do regularly, like reading logs, investigating codebases, and responding to tasks.',
-      'Worked across Copilot, Cursor, and ChatGPT; settled on Claude Code in the terminal as the one I reach for.',
+      'Context efficiency; domain knowledge fed in as markdown',
+      'Self-teaching; the model works out how to do the job better',
+      'Automate the recurring work: logs, codebase investigation, task triage',
+      'Copilot, Cursor, ChatGPT; settled on Claude Code in the terminal',
     ],
   },
   {
     year: '2024',
-    lead: 'Asked to scale out an additional team',
-    what:
-      'within a year, growing from 5 to 10 direct reports, to drive the rollout for our largest customer.',
-    learned: 'How to work with a customer to understand what they need, and deliver on solutions.',
+    lead: 'Scaled to a second team.',
+    what: "5 to 10 direct reports in a year, driving our largest customer's rollout.",
+    learned: 'Understand what a customer needs, then deliver it as a system.',
   },
   {
     year: '2024',
-    lead: 'Certified ScrumMaster,',
-    what: 'and renewed the AWS Certified Developer Associate.',
-    learned: 'How to effectively lead an agile scrum team, and current cloud development practices.',
+    lead: 'Certified ScrumMaster.',
+    what: 'AWS Developer Associate renewed.',
+    learned: 'How to lead an agile team, and current cloud practice.',
   },
   {
     year: '2023',
-    lead: 'Promoted to Software Engineering Manager',
-    what:
-      'over the point-of-sale team; converted the team to full-stack development instead of application specific.',
-    learned: 'Reducing the barriers between teams and codebases increases throughput.',
+    lead: 'Promoted to Software Engineering Manager.',
+    what: 'Point-of-sale team converted from application-specific to full-stack.',
+    learned: 'Fewer barriers between teams and codebases means more throughput.',
   },
   {
     year: '2022',
-    lead: 'Harvard Business School CORe online program,',
-    what: 'and the release of ChatGPT.',
+    lead: 'Harvard Business School CORe.',
+    what: 'And the release of ChatGPT.',
     learned: 'Broader business fundamentals, and a better alternative to Stack Overflow.',
   },
   {
     year: '2021',
-    lead: 'Applied for and was selected on an internal architecture team,',
-    what:
-      'responsible for building and integrating microservices into the system. Promoted to senior software engineer.',
-    learned: 'How to learn new codebases quickly, and how to communicate with other teams.',
+    lead: 'Selected for an internal architecture team.',
+    what: 'Microservices built and integrated into the platform. Promoted to senior software engineer.',
+    learned: 'Learn a new codebase fast; communicate across teams.',
   },
   {
     year: '2021',
-    lead: 'AWS Certified Developer Associate,',
-    what: 'and renewed the Azure Developer Associate.',
+    lead: 'AWS Developer Associate.',
+    what: 'Azure Developer Associate renewed.',
     learned: 'Cloud development best practices.',
   },
   {
     year: '2020',
-    lead: 'Hired at PAR Technology,',
-    what: 'working on a customer-facing point-of-sale application.',
-    learned: 'Working as part of a scrum team in a SaaS business with hundreds of engineers.',
+    lead: 'Hired at PAR Technology.',
+    what: 'Customer-facing point-of-sale application.',
+    learned: 'What a scrum team looks like inside a SaaS business with hundreds of engineers.',
   },
   {
     year: '2019',
     lead: 'Azure Developer Associate.',
-    learned: 'Cloud development best practices.',
   },
   {
     year: '2017',
-    lead: 'Worked as a software engineer at Explorica, Inc.,',
-    what:
-      'on an agile scrum team of four developers serving the entire company in the education travel industry.',
+    lead: 'Software engineer at Explorica.',
+    what: 'Scrum team of four serving the whole company, in education travel.',
     learned: 'End-to-end application ownership.',
   },
   {
     year: '2017',
-    lead: 'Graduated with a Bachelor of Science in Computer Engineering',
-    what: 'and a minor in Mathematics.',
+    lead: 'B.S. Computer Engineering, minor in Mathematics.',
     learned: 'Balancing responsibilities.',
   },
   {
     year: '2017',
-    lead: 'Awarded top senior project in computer engineering,',
-    what:
-      'for a system to help teach vocational skills to people with disabilities in a greenhouse.',
+    lead: 'Top senior project in computer engineering.',
+    what: 'A system to teach vocational skills to people with disabilities, in a greenhouse.',
     learned: 'Build technology that helps people.',
   },
   {
     year: '2017',
-    lead: 'Embedded microcontrollers lab technician,',
+    lead: 'Embedded microcontrollers lab technician.',
     what: 'Electrical Engineering Department, Union College.',
     learned: 'Teaching tests your comprehension.',
   },
   {
     year: '2011',
-    lead: 'Activities assistant at Seven Hills,',
-    what: 'and landscaping work at Flynn Landscaping.',
+    lead: 'Activities assistant for people with disabilities at Seven Hills.',
+    what: 'Landscaping at Flynn Landscaping.',
     learned: 'Work hard, for other people who need help.',
   },
 ];
@@ -118,9 +112,9 @@ function entryItem(entry) {
     ? `<ul class="sub-list">${entry.parts.map((p) => `<li>${p}</li>`).join('')}</ul>`
     : '';
   const learned = entry.learned
-    ? `<p class="learned"><b>Learned:</b> ${entry.learned}</p>`
+    ? `<p class="learned">Learned: ${entry.learned}</p>`
     : '';
-  return `<li><p><i class="year">${entry.year}.</i> <b>${entry.lead}</b>${rest}</p>${parts}${learned}</li>`;
+  return `<li><i class="year">${entry.year}</i><div class="entry"><p><b>${entry.lead}</b>${rest}</p>${parts}${learned}</div></li>`;
 }
 
 function workPage({ isAdmin } = {}) {

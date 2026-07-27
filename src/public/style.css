@@ -22,7 +22,7 @@ header, main, footer {
 
 h1 {
   font-size: 1.9rem;
-  margin: 0;
+  margin: 0 0 0.6rem;
 }
 
 h1 a {
@@ -34,21 +34,6 @@ h2 {
   font-size: 1.25rem;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.6rem;
-}
-
-/* The art is a photo of a page, so its off-white background would show as a
-   grey box; multiply drops it into the page white. */
-.brand-art {
-  height: 4.5rem;
-  width: auto;
-  mix-blend-mode: multiply;
-}
 
 .simple-nav {
   margin: 0.5rem 0;
@@ -105,16 +90,65 @@ hr {
   padding: 0;
 }
 
+/* Years sit in a left gutter; the spine is a border on the entry column, so
+   it runs continuously as long as the entries pad rather than margin. */
 .timeline > li {
-  margin-bottom: 1.1rem;
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0 1.25rem;
+}
+
+.timeline .year {
+  text-align: right;
+}
+
+.timeline .entry {
+  position: relative;
+  border-left: 1px solid #cccccc;
+  padding: 0 0 1.4rem 1.25rem;
+}
+
+.timeline .entry::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 0.45rem;
+  width: 5px;
+  height: 5px;
+  background: #000000;
+  border-radius: 50%;
 }
 
 .timeline p {
   margin: 0;
 }
 
+.timeline .sub-list {
+  margin: 0.35rem 0;
+}
+
 .learned {
   margin-top: 0.2rem;
+}
+
+/* Narrow screens: stack the year above its entry and drop the spine. */
+@media (max-width: 34rem) {
+  .timeline > li {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline .year {
+    text-align: left;
+  }
+
+  .timeline .entry {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .timeline .entry::before {
+    display: none;
+  }
 }
 
 .thoughts {
