@@ -87,6 +87,25 @@ hr {
   margin-bottom: 0.9rem;
 }
 
+.timeline {
+  list-style: none;
+  margin: 0.35rem 0;
+  padding: 0;
+}
+
+.timeline > li {
+  margin-bottom: 1.1rem;
+}
+
+.timeline p {
+  margin: 0;
+}
+
+.learned {
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+
 .thoughts {
   font-style: italic;
 }

@@ -19,6 +19,7 @@ function layout({ title, body, isAdmin = false }) {
       [ <a href="/">Home</a>
       | <a href="/books">Books</a>
       | <a href="/habits">Habits</a>
+      | <a href="/work">My Work</a>
       ${
         isAdmin
           ? '| <a href="/admin">Admin</a> | <form action="/logout" method="post" class="inline-form"><button type="submit" class="link-button">Logout</button></form>'
