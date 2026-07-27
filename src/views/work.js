@@ -33,7 +33,7 @@ const TIMELINE = [
     year: '2024',
     lead: 'Scaled to a second team.',
     what: "5 to 10 direct reports in a year, driving our largest customer's rollout.",
-    learned: 'Understand what a customer needs, then deliver solutions.',
+    learned: 'Understand what a customer needs, then deliver it as a system.',
   },
   {
     year: '2024',
@@ -57,13 +57,13 @@ const TIMELINE = [
     year: '2021',
     lead: 'Promoted to senior software engineer and selected for an internal architecture team.',
     what: 'Microservices built and integrated into the platform.',
-    learned: 'Comprehend a new codebase fast; communicate across teams.',
+    learned: 'Get up to speed on a new codebase fast; communicate across teams.',
   },
   {
     year: '2021',
     lead: 'AWS Developer Associate.',
     what: 'Azure Developer Associate renewed.',
-    learned: 'Cloud development best practices.',
+    learned: 'Reinforced cloud best practices.',
   },
   {
     year: '2020',
