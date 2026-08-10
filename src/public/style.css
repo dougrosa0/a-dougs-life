@@ -155,6 +155,25 @@ hr {
   }
 }
 
+/* Square tiles that reflow to fit the window; no fixed column count, so the
+   grid works from a phone to a wide monitor without breakpoints. */
+.photo-grid {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.5rem;
+}
+
+.photo-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
 .thoughts {
   font-style: italic;
 }
