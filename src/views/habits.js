@@ -22,6 +22,11 @@ const HABITS = [
     detail: "Do something creative before work; right now that's playing guitar.",
   },
   {
+    name: 'Learn more about the world',
+    detail:
+      'Listen to <a href="https://www.wsj.com/podcasts/the-journal" rel="noopener">The Journal</a> Monday through Friday while I eat breakfast. It keeps me up to date on what is happening.',
+  },
+  {
     name: 'Exercise',
     detail: 'Move my body and spend a little time outside.',
   },
