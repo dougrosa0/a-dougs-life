@@ -61,7 +61,7 @@ function lifePage() {
   ).join('');
 
   const body = `
-    <h2>My Life</h2>
+    <h2>My Life: a 14,000 ft view</h2>
     <ul class="photo-grid">${tiles}
     </ul>
   `;

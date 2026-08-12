@@ -220,11 +220,6 @@ hr {
   color: #444444;
 }
 
-.still-reading {
-  font-style: italic;
-  color: #444444;
-}
-
 /* Narrow screens: one column, year above its books, spine dropped. */
 @media (max-width: 40rem) {
   .shelves > li {

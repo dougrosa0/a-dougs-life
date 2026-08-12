@@ -6,24 +6,24 @@ const { escapeHtml } = require('./escape');
 // from the reading-session log. Edit this array to change the page.
 //
 // `year` is the year the book was finished. Books still in progress have no
-// finish date, so they are placed by hand and marked `reading: true`.
+// finish date in the export, so they are placed by hand.
 // Newest year first; within a year, the order they were read.
 const BOOKS = [
   { year: '2026', category: 'learning', title: 'Never Split the Difference', author: 'Chris Voss, Tahl Raz' },
   { year: '2026', category: 'fun', title: 'Oathbringer', author: 'Brandon Sanderson' },
   { year: '2026', category: 'learning', title: 'Digital Minimalism', author: 'Cal Newport' },
-  { year: '2025', category: 'fun', title: 'The Burgess Boys', author: 'Elizabeth Strout', reading: true },
-  { year: '2025', category: 'fun', title: 'Anna Karenina', author: 'Leo Tolstoy', reading: true },
-  { year: '2025', category: 'fun', title: 'Words of Radiance', author: 'Brandon Sanderson', reading: true },
+  { year: '2025', category: 'fun', title: 'The Burgess Boys', author: 'Elizabeth Strout' },
+  { year: '2025', category: 'fun', title: 'Anna Karenina', author: 'Leo Tolstoy' },
+  { year: '2025', category: 'fun', title: 'Words of Radiance', author: 'Brandon Sanderson' },
   { year: '2025', category: 'learning', title: 'Awareness', author: 'Anthony de Mello' },
   { year: '2025', category: 'learning', title: 'What the Most Successful People Do Before Breakfast', author: 'Laura Vanderkam' },
   { year: '2025', category: 'learning', title: 'Meditations', author: 'Marcus Aurelius' },
   { year: '2025', category: 'learning', title: 'The Power of Positive Dog Training', author: 'Pat Miller' },
   { year: '2025', category: 'learning', title: 'U.S. Military\'s Dog Training Handbook', author: 'U.S. Department of Defense' },
-  { year: '2024', category: 'learning', title: '12 Rules for Life', author: 'Jordan B. Peterson', reading: true },
-  { year: '2024', category: 'learning', title: 'Start with Why', author: 'Simon Sinek', reading: true },
+  { year: '2024', category: 'learning', title: '12 Rules for Life', author: 'Jordan B. Peterson' },
+  { year: '2024', category: 'learning', title: 'Start with Why', author: 'Simon Sinek' },
   { year: '2024', category: 'fun', title: 'The Way of Kings', author: 'Brandon Sanderson' },
-  { year: '2024', category: 'learning', title: 'Japan: A Short History', author: 'Mikiso Hane', reading: true },
+  { year: '2024', category: 'learning', title: 'Japan: A Short History', author: 'Mikiso Hane' },
   { year: '2023', category: 'learning', title: 'In Defense of Food', author: 'Michael Pollan' },
   { year: '2023', category: 'fun', title: 'Animal Farm', author: 'George Orwell' },
   { year: '2023', category: 'learning', title: 'High Output Management', author: 'Andrew S. Grove' },
@@ -42,8 +42,7 @@ const COLUMNS = [
 ];
 
 function renderBook(book) {
-  const still = book.reading ? ' <span class="still-reading">still reading</span>' : '';
-  return `<li>${escapeHtml(book.title)}<br><span class="byline">${escapeHtml(book.author)}</span>${still}</li>`;
+  return `<li>${escapeHtml(book.title)}<br><span class="byline">${escapeHtml(book.author)}</span></li>`;
 }
 
 // One shelf is a single year's books on one side of the spine. Empty shelves
