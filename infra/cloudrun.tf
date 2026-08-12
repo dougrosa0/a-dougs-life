@@ -12,14 +12,10 @@ resource "google_cloud_run_v2_service" "app" {
       max_instance_count = 3
     }
 
-    # Direct VPC egress: how Cloud Run reaches the Postgres VM's private IP.
-    vpc_access {
-      network_interfaces {
-        network    = google_compute_network.vpc.id
-        subnetwork = google_compute_subnetwork.app.id
-      }
-      egress = "PRIVATE_RANGES_ONLY"
-    }
+    # No vpc_access block: the site is entirely static content compiled into
+    # the image, so there is nothing private to reach. That is also why there
+    # are no env vars or secrets here; Cloud Run injects PORT and that is all
+    # server.js needs.
 
     containers {
       # Placeholder public image. CI/CD owns the real image — see the
@@ -28,35 +24,6 @@ resource "google_cloud_run_v2_service" "app" {
 
       ports {
         container_port = 8080 # Cloud Run injects PORT=8080; server.js honors it
-      }
-
-      # Non-secret env.
-      env {
-        name  = "ADMIN_USERNAME"
-        value = var.admin_username
-      }
-      env {
-        name  = "SECURE_COOKIES"
-        value = "true" # served over HTTPS
-      }
-
-      # Secret env, sourced from Secret Manager.
-      dynamic "env" {
-        for_each = {
-          DATABASE_URL        = "database-url"
-          SESSION_SECRET      = "session-secret"
-          ADMIN_PASSWORD_HASH = "admin-password-hash"
-          ADMIN_PASSWORD_SALT = "admin-password-salt"
-        }
-        content {
-          name = env.key
-          value_source {
-            secret_key_ref {
-              secret  = google_secret_manager_secret.app[env.value].secret_id
-              version = "latest"
-            }
-          }
-        }
       }
 
       startup_probe {
@@ -76,9 +43,9 @@ resource "google_cloud_run_v2_service" "app" {
     }
   }
 
-  # Ownership split: Terraform owns the service's existence / networking /
-  # secrets; CI/CD owns the deployed image and traffic split. Without ignoring
-  # the image, `terraform apply` would revert CD's deploy back to the placeholder.
+  # Ownership split: Terraform owns the service's existence; CI/CD owns the
+  # deployed image and traffic split. Without ignoring the image,
+  # `terraform apply` would revert CD's deploy back to the placeholder.
   lifecycle {
     ignore_changes = [
       template[0].containers[0].image,
@@ -86,11 +53,6 @@ resource "google_cloud_run_v2_service" "app" {
       client_version,
     ]
   }
-
-  depends_on = [
-    google_secret_manager_secret_version.app,
-    google_secret_manager_secret_iam_member.runtime_access,
-  ]
 }
 
 # Public site: allow unauthenticated requests.

@@ -1,4 +1,4 @@
-# These get copied into GitHub repo secrets/variables (Phase 4) so CI can deploy.
+# These get copied into GitHub repo variables so CI can deploy.
 
 output "cloud_run_url" {
   description = "Public URL of the Cloud Run service."
@@ -8,16 +8,6 @@ output "cloud_run_url" {
 output "artifact_registry_repo" {
   description = "Docker image path prefix to push builds to."
   value       = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.app.repository_id}"
-}
-
-output "db_vm_name" {
-  description = "Name of the Postgres VM (for gcloud compute ssh --tunnel-through-iap)."
-  value       = google_compute_instance.db.name
-}
-
-output "db_private_ip" {
-  description = "Reserved private IP the app connects to over the VPC."
-  value       = google_compute_address.db_private.address
 }
 
 output "wif_provider" {
