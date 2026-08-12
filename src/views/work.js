@@ -118,7 +118,7 @@ function entryItem(entry) {
   return `<li><i class="year">${entry.year}</i><div class="entry"><p><b>${entry.lead}</b>${rest}</p>${parts}${learned}</div></li>`;
 }
 
-function workPage({ isAdmin } = {}) {
+function workPage() {
   const entries = TIMELINE.map(entryItem).join('');
 
   const body = `
@@ -127,7 +127,7 @@ function workPage({ isAdmin } = {}) {
     <ul class="timeline">${entries}</ul>
   `;
 
-  return layout({ title: 'My Work', body, isAdmin });
+  return layout({ title: 'My Work', body });
 }
 
 module.exports = { workPage, TIMELINE };

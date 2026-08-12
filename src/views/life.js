@@ -50,7 +50,7 @@ const PHOTOS = [
   ...[...AVAILABLE].filter((name) => !ORDER.includes(name)).sort(),
 ];
 
-function lifePage({ isAdmin } = {}) {
+function lifePage() {
   const tiles = PHOTOS.map(
     (name) => `
       <li>
@@ -66,7 +66,7 @@ function lifePage({ isAdmin } = {}) {
     </ul>
   `;
 
-  return layout({ title: 'My Life', body, isAdmin });
+  return layout({ title: 'My Life', body });
 }
 
 module.exports = { lifePage };

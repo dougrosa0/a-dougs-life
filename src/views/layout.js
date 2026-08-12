@@ -1,6 +1,6 @@
 const GITHUB_URL = 'https://github.com/dougrosa0/a-dougs-life';
 
-function layout({ title, body, isAdmin = false }) {
+function layout({ title, body }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,11 +20,6 @@ function layout({ title, body, isAdmin = false }) {
       | <a href="/work">My Work</a>
       | <a href="/habits">My Habits</a>
       | <a href="/books">Books I've Been Reading</a>
-      ${
-        isAdmin
-          ? '| <a href="/admin">Admin</a> | <form action="/logout" method="post" class="inline-form"><button type="submit" class="link-button">Logout</button></form>'
-          : ''
-      }
     </p>
     <hr>
   </header>

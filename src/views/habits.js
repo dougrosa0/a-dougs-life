@@ -64,7 +64,7 @@ function goalItem(goal) {
   return `<li>${goal.name}:<ul class="sub-list">${parts}</ul></li>`;
 }
 
-function habitsPage({ isAdmin } = {}) {
+function habitsPage() {
   const goals = GOALS.map(goalItem).join('');
   const habits = HABITS.map((h) => `<li><b>${h.name}:</b> ${h.detail}</li>`).join('');
 
@@ -80,7 +80,7 @@ function habitsPage({ isAdmin } = {}) {
     <ul class="category-list">${habits}</ul>
   `;
 
-  return layout({ title: 'Habits', body, isAdmin });
+  return layout({ title: 'Habits', body });
 }
 
 module.exports = { habitsPage };

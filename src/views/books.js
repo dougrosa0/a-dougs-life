@@ -57,7 +57,7 @@ function renderShelf(books, label) {
     .join('')}</ul></div>`;
 }
 
-function booksPage({ isAdmin } = {}) {
+function booksPage() {
   const years = [...new Set(BOOKS.map((book) => book.year))];
 
   const rows = years
@@ -86,7 +86,7 @@ function booksPage({ isAdmin } = {}) {
     </ul>
   `;
 
-  return layout({ title: 'Books', body, isAdmin });
+  return layout({ title: 'Books', body });
 }
 
 module.exports = { booksPage, BOOKS };

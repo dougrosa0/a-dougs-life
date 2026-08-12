@@ -1,6 +1,6 @@
 const { layout } = require('./layout');
 
-function homePage({ isAdmin } = {}) {
+function homePage() {
   const body = `
     <p>Hey, I'm Doug.</p>
     <p>
@@ -8,7 +8,7 @@ function homePage({ isAdmin } = {}) {
       I use technology and design. This website serves as a small record of what I'm into.
     </p>
   `;
-  return layout({ title: undefined, body, isAdmin });
+  return layout({ title: undefined, body });
 }
 
 module.exports = { homePage };

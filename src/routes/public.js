@@ -8,25 +8,11 @@ const { lifePage } = require('../views/life');
 function createPublicRouter() {
   const router = express.Router();
 
-  router.get('/', (req, res) => {
-    res.send(homePage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
-  });
-
-  router.get('/life', (req, res) => {
-    res.send(lifePage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
-  });
-
-  router.get('/habits', (req, res) => {
-    res.send(habitsPage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
-  });
-
-  router.get('/work', (req, res) => {
-    res.send(workPage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
-  });
-
-  router.get('/books', (req, res) => {
-    res.send(booksPage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
-  });
+  router.get('/', (req, res) => res.send(homePage()));
+  router.get('/life', (req, res) => res.send(lifePage()));
+  router.get('/habits', (req, res) => res.send(habitsPage()));
+  router.get('/work', (req, res) => res.send(workPage()));
+  router.get('/books', (req, res) => res.send(booksPage()));
 
   return router;
 }

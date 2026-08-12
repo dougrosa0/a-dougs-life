@@ -1,16 +1,9 @@
 require('dotenv').config();
-const { createDb } = require('./db');
 const { createApp } = require('./app');
 
 const port = process.env.PORT || 3000;
 
-const pool = createDb(process.env.DATABASE_URL);
-
-const app = createApp({
-  pool,
-  sessionSecret: process.env.SESSION_SECRET,
-  secureCookies: process.env.SECURE_COOKIES === 'true',
-});
+const app = createApp();
 
 app.listen(port, () => {
   console.log(`A Doug's Life listening on port ${port}`);
