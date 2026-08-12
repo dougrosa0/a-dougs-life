@@ -4,9 +4,8 @@ const { booksPage } = require('../views/books');
 const { habitsPage } = require('../views/habits');
 const { workPage } = require('../views/work');
 const { lifePage } = require('../views/life');
-const { asyncHandler } = require('../lib/async-handler');
 
-function createPublicRouter(bookStore) {
+function createPublicRouter() {
   const router = express.Router();
 
   router.get('/', (req, res) => {
@@ -25,13 +24,9 @@ function createPublicRouter(bookStore) {
     res.send(workPage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
   });
 
-  router.get(
-    '/books',
-    asyncHandler(async (req, res) => {
-      const books = await bookStore.list();
-      res.send(booksPage({ books, isAdmin: Boolean(req.session && req.session.isAdmin) }));
-    })
-  );
+  router.get('/books', (req, res) => {
+    res.send(booksPage({ isAdmin: Boolean(req.session && req.session.isAdmin) }));
+  });
 
   return router;
 }

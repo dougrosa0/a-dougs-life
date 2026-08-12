@@ -155,6 +155,112 @@ hr {
   }
 }
 
+/* Books: the work timeline's year gutter and spine, but with two columns so
+   fiction and everything else run side by side down the same years. */
+.shelves {
+  list-style: none;
+  margin: 0.35rem 0;
+  padding: 0;
+}
+
+.shelves > li {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr 1fr;
+  gap: 0 1.25rem;
+}
+
+.shelves .year {
+  text-align: right;
+}
+
+.shelves .shelf {
+  position: relative;
+  border-left: 1px solid #cccccc;
+  padding: 0 0 1.4rem 1.25rem;
+}
+
+/* A dot per shelf that actually has books, so an empty year reads as a gap in
+   the spine rather than a missing entry. */
+.shelves .shelf:not(.empty)::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 0.45rem;
+  width: 5px;
+  height: 5px;
+  background: #1a1a1a;
+  border-radius: 50%;
+}
+
+.shelves .shelf ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.shelves .shelf li {
+  margin-bottom: 0.6rem;
+}
+
+.shelves .shelf li:last-child {
+  margin-bottom: 0;
+}
+
+/* The column headings sit above the spine, so they get no border or dot. */
+.shelves .shelf-head .shelf {
+  border-left: none;
+  padding-bottom: 0.4rem;
+}
+
+.shelf-label {
+  display: none;
+}
+
+.byline {
+  color: #444444;
+}
+
+.still-reading {
+  font-style: italic;
+  color: #444444;
+}
+
+/* Narrow screens: one column, year above its books, spine dropped. */
+@media (max-width: 40rem) {
+  .shelves > li {
+    grid-template-columns: 1fr;
+  }
+
+  .shelves .year {
+    text-align: left;
+  }
+
+  .shelves .shelf {
+    border-left: none;
+    padding: 0 0 0.9rem 0;
+  }
+
+  .shelves .shelf:not(.empty)::before {
+    display: none;
+  }
+
+  .shelves .shelf.empty {
+    display: none;
+  }
+
+  .shelves .shelf-head {
+    display: none;
+  }
+
+  /* With the column headings gone, each shelf has to name itself. */
+  .shelf-label {
+    display: block;
+    font-weight: normal;
+    font-style: italic;
+    color: #444444;
+  }
+}
+
 /* Square tiles that reflow to fit the window; no fixed column count, so the
    grid works from a phone to a wide monitor without breakpoints. */
 .photo-grid {

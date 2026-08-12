@@ -1,64 +1,92 @@
 const { layout } = require('./layout');
 const { escapeHtml } = require('./escape');
 
-const CATEGORY_ORDER = ['fun', 'learning'];
-const CATEGORY_LABELS = {
-  fun: 'For Fun',
-  learning: 'For Learning',
-};
+// Seeded from my Kindle reading history (Amazon "Request My Data" export,
+// August 2026): finish dates came from the completed-titles list, start dates
+// from the reading-session log. Edit this array to change the page.
+//
+// `year` is the year the book was finished. Books still in progress have no
+// finish date, so they are placed by hand and marked `reading: true`.
+// Newest year first; within a year, the order they were read.
+const BOOKS = [
+  { year: '2026', category: 'learning', title: 'Never Split the Difference', author: 'Chris Voss, Tahl Raz' },
+  { year: '2026', category: 'fun', title: 'Oathbringer', author: 'Brandon Sanderson' },
+  { year: '2026', category: 'learning', title: 'Digital Minimalism', author: 'Cal Newport' },
+  { year: '2025', category: 'fun', title: 'The Burgess Boys', author: 'Elizabeth Strout', reading: true },
+  { year: '2025', category: 'fun', title: 'Anna Karenina', author: 'Leo Tolstoy', reading: true },
+  { year: '2025', category: 'fun', title: 'Words of Radiance', author: 'Brandon Sanderson', reading: true },
+  { year: '2025', category: 'learning', title: 'Awareness', author: 'Anthony de Mello' },
+  { year: '2025', category: 'learning', title: 'What the Most Successful People Do Before Breakfast', author: 'Laura Vanderkam' },
+  { year: '2025', category: 'learning', title: 'Meditations', author: 'Marcus Aurelius' },
+  { year: '2025', category: 'learning', title: 'The Power of Positive Dog Training', author: 'Pat Miller' },
+  { year: '2025', category: 'learning', title: 'U.S. Military\'s Dog Training Handbook', author: 'U.S. Department of Defense' },
+  { year: '2024', category: 'learning', title: '12 Rules for Life', author: 'Jordan B. Peterson', reading: true },
+  { year: '2024', category: 'learning', title: 'Start with Why', author: 'Simon Sinek', reading: true },
+  { year: '2024', category: 'fun', title: 'The Way of Kings', author: 'Brandon Sanderson' },
+  { year: '2024', category: 'learning', title: 'Japan: A Short History', author: 'Mikiso Hane', reading: true },
+  { year: '2023', category: 'learning', title: 'In Defense of Food', author: 'Michael Pollan' },
+  { year: '2023', category: 'fun', title: 'Animal Farm', author: 'George Orwell' },
+  { year: '2023', category: 'learning', title: 'High Output Management', author: 'Andrew S. Grove' },
+  { year: '2023', category: 'fun', title: 'The Candy House', author: 'Jennifer Egan' },
+  { year: '2023', category: 'learning', title: 'How to Change Your Mind', author: 'Michael Pollan' },
+  { year: '2020', category: 'fun', title: 'The Sojourn', author: 'Andrew Krivak' },
+  { year: '2020', category: 'fun', title: 'A Man Called Ove', author: 'Fredrik Backman' },
+  { year: '2020', category: 'learning', title: 'Atomic Habits', author: 'James Clear' },
+  { year: '2019', category: 'learning', title: 'Principles', author: 'Ray Dalio' },
+  { year: '2019', category: 'fun', title: 'Sleeping Beauties', author: 'Stephen King, Owen King' },
+];
 
-const STATUS_ORDER = ['reading', 'want_to_read', 'finished'];
-const STATUS_LABELS = {
-  reading: 'Currently Reading',
-  want_to_read: 'Want to Read',
-  finished: 'Finished',
-};
+const COLUMNS = [
+  { category: 'fun', label: 'For Fun' },
+  { category: 'learning', label: 'For Learning' },
+];
 
 function renderBook(book) {
-  const rating = book.rating ? ` (Rating: ${'*'.repeat(book.rating)}${'-'.repeat(5 - book.rating)})` : '';
-  const thoughts = book.thoughts ? ` <span class="thoughts">"${escapeHtml(book.thoughts)}"</span>` : '';
-  return `<li><b>${escapeHtml(book.title)}</b> by ${escapeHtml(book.author)}${rating}${thoughts}</li>`;
+  const still = book.reading ? ' <span class="still-reading">still reading</span>' : '';
+  return `<li>${escapeHtml(book.title)}<br><span class="byline">${escapeHtml(book.author)}</span>${still}</li>`;
 }
 
-function renderStatusGroups(books) {
-  const byStatus = STATUS_ORDER.map((status) => ({
-    status,
-    label: STATUS_LABELS[status],
-    items: books.filter((book) => book.status === status),
-  })).filter((group) => group.items.length > 0);
-
-  if (!byStatus.length) {
-    return '<p>Nothing here yet. Check back soon.</p>';
-  }
-
-  return `<ul class="category-list">${byStatus
-    .map(
-      (group) => `
-        <li>
-          <b>${group.label}</b> (${group.items.length})
-          <ul class="sub-list">
-            ${group.items.map(renderBook).join('')}
-          </ul>
-        </li>
-      `
-    )
-    .join('')}</ul>`;
+// One shelf is a single year's books on one side of the spine. Empty shelves
+// still render, because a year where I read no fiction is worth seeing.
+// The label is redundant beside the column headings and only shows once the
+// two columns stack on a narrow screen, where the headings are gone.
+function renderShelf(books, label) {
+  if (!books.length) return '<div class="shelf empty"></div>';
+  return `<div class="shelf"><b class="shelf-label">${label}</b><ul>${books
+    .map(renderBook)
+    .join('')}</ul></div>`;
 }
 
-function booksPage({ books = [], isAdmin } = {}) {
-  const sections = CATEGORY_ORDER.map(
-    (category) => `
-      <h3>${CATEGORY_LABELS[category]}</h3>
-      ${renderStatusGroups(books.filter((book) => book.category === category))}
-    `
-  ).join('');
+function booksPage({ isAdmin } = {}) {
+  const years = [...new Set(BOOKS.map((book) => book.year))];
+
+  const rows = years
+    .map((year) => {
+      const inYear = BOOKS.filter((book) => book.year === year);
+      const shelves = COLUMNS.map((col) =>
+        renderShelf(inYear.filter((book) => book.category === col.category), col.label)
+      ).join('');
+      return `<li><i class="year">${year}</i>${shelves}</li>`;
+    })
+    .join('');
 
   const body = `
-    <h2>Books</h2>
-    ${sections}
+    <h2>Books I've Been Reading</h2>
+    <p class="lede">
+      What I have read since 2019, pulled from my Kindle history. Fiction on the
+      left, everything else on the right.
+    </p>
+
+    <ul class="shelves">
+      <li class="shelf-head">
+        <i class="year"></i>
+        ${COLUMNS.map((col) => `<div class="shelf"><b>${col.label}</b></div>`).join('')}
+      </li>
+      ${rows}
+    </ul>
   `;
 
   return layout({ title: 'Books', body, isAdmin });
 }
 
-module.exports = { booksPage };
+module.exports = { booksPage, BOOKS };
