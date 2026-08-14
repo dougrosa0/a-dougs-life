@@ -10,6 +10,20 @@ output "artifact_registry_repo" {
   value       = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.app.repository_id}"
 }
 
+# The records to create in Cloudflare. Google returns these only after the
+# mapping exists, so they are empty until the first successful apply.
+output "dns_records" {
+  description = "DNS records to add at the registrar, as type/name/value triples."
+  value = {
+    for k, m in {
+      apex = google_cloud_run_domain_mapping.apex
+      www  = google_cloud_run_domain_mapping.www
+      } : k => [
+      for r in m.status[0].resource_records : "${r.type}  ${coalesce(r.name, "@")}  ${r.rrdata}"
+    ]
+  }
+}
+
 output "wif_provider" {
   description = "Full resource name of the WIF provider, for the google-github-actions/auth step."
   value       = google_iam_workload_identity_pool_provider.github.name

@@ -10,6 +10,12 @@ variable "region" {
   default     = "us-central1"
 }
 
+variable "domain" {
+  description = "Apex domain the site is served from. Must be verified in Search Console first."
+  type        = string
+  default     = "a-dougs-life.com"
+}
+
 variable "github_repo" {
   description = "owner/repo allowed to impersonate the deployer SA via Workload Identity Federation."
   type        = string
