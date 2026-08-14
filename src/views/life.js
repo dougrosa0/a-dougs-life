@@ -4,6 +4,11 @@ const { layout } = require('./layout');
 
 const THUMB_DIR = path.join(__dirname, '..', 'public', 'photos', 'thumb');
 
+// Photos too wide to survive a square crop. Their thumbnail is cut 2:1 instead
+// and the tile spans two columns. The family line-up is nearly as wide as its
+// own frame, so a square would always lose whoever stands on the ends.
+const WIDE = new Set(['photo-19.jpg']);
+
 // Display order. Reorder these lines to reorder the grid; the note after each
 // filename is just so you do not have to open the file to know which is which.
 // Anything in the photos directory but missing from this list is appended at
@@ -51,14 +56,15 @@ const PHOTOS = [
 ];
 
 function lifePage() {
-  const tiles = PHOTOS.map(
-    (name) => `
-      <li>
+  const tiles = PHOTOS.map((name) => {
+    const wide = WIDE.has(name);
+    return `
+      <li${wide ? ' class="wide"' : ''}>
         <a href="/photos/full/${name}">
-          <img src="/photos/thumb/${name}" alt="" width="600" height="600" loading="lazy">
+          <img src="/photos/thumb/${name}" alt="" width="${wide ? 1200 : 600}" height="600" loading="lazy">
         </a>
-      </li>`
-  ).join('');
+      </li>`;
+  }).join('');
 
   const body = `
     <h2>My Life: a 14,000 ft view</h2>

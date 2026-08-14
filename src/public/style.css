@@ -275,6 +275,18 @@ hr {
   object-fit: cover;
 }
 
+.photo-grid li.wide img {
+  aspect-ratio: 2 / 1;
+}
+
+/* Only span two columns once there are two to span. Below this the grid is a
+   single column, and spanning would invent a second one and break the row. */
+@media (min-width: 26rem) {
+  .photo-grid li.wide {
+    grid-column: span 2;
+  }
+}
+
 .thoughts {
   font-style: italic;
 }
