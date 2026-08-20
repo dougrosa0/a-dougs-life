@@ -80,7 +80,7 @@ function habitsPage() {
     <ul class="category-list">${habits}</ul>
   `;
 
-  return layout({ title: 'Habits', body });
+  return layout({ title: 'Habits', path: '/habits', body });
 }
 
 module.exports = { habitsPage };

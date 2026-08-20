@@ -79,3 +79,20 @@ test('book titles and authors are escaped', () => {
   assert.ok(!html.includes(apostrophed.title), 'raw apostrophe leaked into the markup');
   assert.ok(html.includes(apostrophed.title.replace(/'/g, '&#39;')));
 });
+
+// Three hosts serve this site. The canonical tag is what tells search engines
+// which one to index, so every page must carry one pointing at the apex.
+test('every page declares its canonical URL on the apex', () => {
+  const expected = {
+    home: '/',
+    life: '/life',
+    work: '/work',
+    habits: '/habits',
+    books: '/books',
+  };
+
+  for (const [name, render] of PAGES) {
+    const tag = `<link rel="canonical" href="https://a-dougs-life.com${expected[name]}">`;
+    assert.ok(render().includes(tag), `${name} is missing ${tag}`);
+  }
+});

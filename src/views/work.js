@@ -127,7 +127,7 @@ function workPage() {
     <ul class="timeline">${entries}</ul>
   `;
 
-  return layout({ title: 'My Work', body });
+  return layout({ title: 'My Work', path: '/work', body });
 }
 
 module.exports = { workPage, TIMELINE };

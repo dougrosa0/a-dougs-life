@@ -8,7 +8,7 @@ function homePage() {
       I use technology and design. This website serves as a small record of what I'm into.
     </p>
   `;
-  return layout({ title: undefined, body });
+  return layout({ title: undefined, path: '/', body });
 }
 
 module.exports = { homePage };

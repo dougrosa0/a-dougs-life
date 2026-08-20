@@ -85,7 +85,7 @@ function booksPage() {
     </ul>
   `;
 
-  return layout({ title: 'Books', body });
+  return layout({ title: 'Books', path: '/books', body });
 }
 
 module.exports = { booksPage, BOOKS };

@@ -72,7 +72,7 @@ function lifePage() {
     </ul>
   `;
 
-  return layout({ title: 'My Life', body });
+  return layout({ title: 'My Life', path: '/life', body });
 }
 
 module.exports = { lifePage };

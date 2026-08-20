@@ -1,12 +1,17 @@
 const GITHUB_URL = 'https://github.com/dougrosa0/a-dougs-life';
 
-function layout({ title, body }) {
+// The site answers on three hosts: the apex, www, and the generated run.app URL.
+// Every page names the apex as its canonical so search engines consolidate on one.
+const SITE_ORIGIN = 'https://a-dougs-life.com';
+
+function layout({ title, path, body }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title ? `${title} - A Doug's Life` : "A Doug's Life"}</title>
+  <link rel="canonical" href="${SITE_ORIGIN}${path}">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/style.css">
 </head>
@@ -34,4 +39,4 @@ function layout({ title, body }) {
 </html>`;
 }
 
-module.exports = { layout, GITHUB_URL };
+module.exports = { layout, GITHUB_URL, SITE_ORIGIN };
