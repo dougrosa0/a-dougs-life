@@ -44,7 +44,7 @@ const ORDER = [
   // Everything else, oldest first.
   { file: 'photo-08.jpg', alt: 'Two dogs in the back seat' },
   { file: 'photo-20.jpg', alt: 'Paddling with a dog swimming alongside' },
-  { file: 'photo-12.jpg', alt: 'A tandem skydive' },
+  { file: 'photo-24.jpg', alt: 'Ice climbing a frozen pillar, with pines on the slope below' },
   { file: 'photo-13.jpg', alt: 'The raft in the whitewater' },
   { file: 'photo-18.jpg', alt: 'The bow of a kayak at sunset' },
   { file: 'photo-09.jpg', alt: 'The soccer team with the trophy' },
