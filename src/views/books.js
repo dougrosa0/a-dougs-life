@@ -12,6 +12,8 @@ const BOOKS = [
   { year: '2026', category: 'learning', title: 'Never Split the Difference', author: 'Chris Voss, Tahl Raz' },
   { year: '2026', category: 'fun', title: 'Oathbringer', author: 'Brandon Sanderson' },
   { year: '2026', category: 'learning', title: 'Digital Minimalism', author: 'Cal Newport' },
+  { year: '2026', category: 'fun', title: 'Rhythm of War', author: 'Brandon Sanderson' },
+  { year: '2026', category: 'learning', title: 'The Software Architect Elevator', author: 'Gregor Hohpe' },
   { year: '2025', category: 'fun', title: 'The Burgess Boys', author: 'Elizabeth Strout' },
   { year: '2025', category: 'fun', title: 'Anna Karenina', author: 'Leo Tolstoy' },
   { year: '2025', category: 'fun', title: 'Words of Radiance', author: 'Brandon Sanderson' },
