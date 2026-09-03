@@ -14,8 +14,8 @@ const WIDE = new Set(['photo-19.jpg', 'photo-21.jpg']);
 // grid. The description becomes the alt text, so it is read aloud by a screen
 // reader and shown if the image never loads: say what is in the frame, not
 // what the file is called. Anything in the photos directory but missing from
-// this list is appended at the end, so re-running scripts/optimize-photos.js
-// can never blank the page.
+// this list is appended at the end, so dropping new files in can never blank
+// the page. Those files are resized and stripped of EXIF outside this repo.
 const ORDER = [
   // The four that open the page.
   { file: 'photo-19.jpg', alt: 'Family lined up on the beach' },

@@ -24,8 +24,6 @@ the same anywhere.**
 
 - **[Express](https://expressjs.com/)** for HTTP and routing
 - **[dotenv](https://www.npmjs.com/package/dotenv)** to load `.env` in local development
-- **[sharp](https://www.npmjs.com/package/sharp)** as the only dev dependency, used by
-  the photo script and never shipped in the image
 
 No template engine, no CSS framework, no ORM, no bundler. HTML comes from plain
 template-literal functions in `src/views/`. Styling is one hand-written stylesheet.
@@ -62,8 +60,6 @@ src/
     layout.js              the shared shell: head, nav, footer
     escape.js              HTML escaping helper
   public/                  style.css, favicon, robots.txt, sitemap.xml, photos/
-scripts/
-  optimize-photos.js       camera originals to the two web sizes, EXIF stripped
 test/                      node:test suite, no test framework dependency
 infra/                     Terraform for the whole cloud footprint
 .github/workflows/ci.yml   test, build, push, gated deploy
@@ -90,19 +86,6 @@ covers the view functions, the canonical-host middleware, and the SEO files, and
 asserts a few decisions rather than just behaviour: that no page links to the admin
 interface that was removed, that every page carries a canonical tag pointing at the
 apex, and that no em dash survives into the copy.
-
-## Adding photos
-
-```bash
-npm run optimize-photos ~/path/to/originals
-```
-
-Writes a square thumbnail and a size-capped full copy for each input, and strips EXIF
-on the way through. That last part matters more than the file size: phone photos carry
-GPS coordinates, and publishing those publishes where they were taken. Then add the new
-filenames to `ORDER` in `src/views/life.js` to place them in the grid. Anything present
-on disk but missing from that list is appended rather than dropped, so the page can
-never come out blank.
 
 ## Deployment
 
