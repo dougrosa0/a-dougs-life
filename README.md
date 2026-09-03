@@ -6,7 +6,7 @@ A small personal website, live at [a-dougs-life.com](https://a-dougs-life.com).
 
 | Path      | What it is                                              |
 | --------- | ------------------------------------------------------- |
-| `/`       | Who I am, in a paragraph                                |
+| `/`       | Why the website                                         |
 | `/life`   | A photo grid, thumbnails linking to full-size copies    |
 | `/work`   | A career timeline: what happened each year, and what I took from it |
 | `/habits` | The daily habits I hold myself to, and the goals behind them |
