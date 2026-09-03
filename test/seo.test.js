@@ -3,8 +3,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { canonicalHost } = require('../src/middleware/canonical-host');
+const { PAGES } = require('../src/pages');
 
-const PATHS = ['/', '/life', '/work', '/habits', '/books'];
+// The sitemap is a hand-written file rather than a generated route, so the
+// registry is what keeps it honest: add a page and this list grows, which is
+// what makes the sitemap test below fail until the file catches up.
+const PATHS = PAGES.map((page) => page.path);
 const publicDir = path.join(__dirname, '..', 'src', 'public');
 
 function handle(host, originalUrl = '/') {

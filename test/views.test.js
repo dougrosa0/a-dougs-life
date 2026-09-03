@@ -1,44 +1,35 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { homePage } = require('../src/views/home');
+const { PAGES } = require('../src/pages');
+const { NAV } = require('../src/nav');
 const { lifePage, ORDER, PHOTOS } = require('../src/views/life');
-const { workPage } = require('../src/views/work');
-const { habitsPage } = require('../src/views/habits');
 const { booksPage, BOOKS } = require('../src/views/books');
 const { notFoundPage, errorPage } = require('../src/views/errors');
 
-const PAGES = [
-  ['home', homePage],
-  ['life', lifePage],
-  ['work', workPage],
-  ['habits', habitsPage],
-  ['books', booksPage],
-];
-
 test('every page renders a complete document with the shared nav', () => {
-  for (const [name, render] of PAGES) {
+  for (const { path, render } of PAGES) {
     const html = render();
-    assert.match(html, /^<!DOCTYPE html>/, `${name} is missing a doctype`);
-    assert.match(html, /<\/html>$/, `${name} is truncated`);
-    for (const href of ['/', '/life', '/work', '/habits', '/books']) {
-      assert.ok(html.includes(`href="${href}"`), `${name} nav is missing ${href}`);
+    assert.match(html, /^<!DOCTYPE html>/, `${path} is missing a doctype`);
+    assert.match(html, /<\/html>$/, `${path} is truncated`);
+    for (const item of NAV) {
+      assert.ok(html.includes(`href="${item.path}"`), `${path} nav is missing ${item.path}`);
     }
   }
 });
 
 test('no page links to the admin UI that no longer exists', () => {
-  for (const [name, render] of PAGES) {
+  for (const { path, render } of PAGES) {
     const html = render();
-    assert.ok(!html.includes('/admin'), `${name} still links to /admin`);
-    assert.ok(!html.includes('/login'), `${name} still links to /login`);
+    assert.ok(!html.includes('/admin'), `${path} still links to /admin`);
+    assert.ok(!html.includes('/login'), `${path} still links to /login`);
   }
 });
 
 // The site's copy claims minimalism, so this is a content rule, not a style
 // preference: em dashes were stripped site-wide and should stay gone.
 test('no em dashes in rendered copy', () => {
-  for (const [name, render] of PAGES) {
-    assert.ok(!render().includes('—'), `${name} contains an em dash`);
+  for (const { path, render } of PAGES) {
+    assert.ok(!render().includes('—'), `${path} contains an em dash`);
   }
 });
 
@@ -110,16 +101,8 @@ test('book titles and authors are escaped', () => {
 // Three hosts serve this site. The canonical tag is what tells search engines
 // which one to index, so every page must carry one pointing at the apex.
 test('every page declares its canonical URL on the apex', () => {
-  const expected = {
-    home: '/',
-    life: '/life',
-    work: '/work',
-    habits: '/habits',
-    books: '/books',
-  };
-
-  for (const [name, render] of PAGES) {
-    const tag = `<link rel="canonical" href="https://a-dougs-life.com${expected[name]}">`;
-    assert.ok(render().includes(tag), `${name} is missing ${tag}`);
+  for (const { path, render } of PAGES) {
+    const tag = `<link rel="canonical" href="https://a-dougs-life.com${path}">`;
+    assert.ok(render().includes(tag), `${path} is missing ${tag}`);
   }
 });

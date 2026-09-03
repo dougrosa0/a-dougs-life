@@ -1,3 +1,5 @@
+const { NAV } = require('../nav');
+
 const GITHUB_URL = 'https://github.com/dougrosa0/a-dougs-life';
 
 // The site answers on three hosts: the apex, www, and the generated run.app URL.
@@ -21,11 +23,9 @@ ${path === null ? '' : `  <link rel="canonical" href="${SITE_ORIGIN}${path}">\n`
     <h1><a href="/">A Doug's Life</a></h1>
     <hr>
     <p class="simple-nav">
-      <a href="/">Home</a>
-      | <a href="/life">My Life</a>
-      | <a href="/work">My Work</a>
-      | <a href="/habits">My Habits</a>
-      | <a href="/books">Books I've Been Reading</a>
+      ${NAV.map(
+        (item, i) => `${i === 0 ? '' : '| '}<a href="${item.path}">${item.label}</a>`
+      ).join('\n      ')}
     </p>
     <hr>
   </header>
