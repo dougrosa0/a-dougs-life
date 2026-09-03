@@ -9,7 +9,7 @@ const TIMELINE = [
     year: '2026',
     lead: 'Current role: Software Engineering Manager.',
     what:
-      'Two teams merged into feature pods built for agentic AI coding. Velocity 50 to 100 story points.',
+      'Two teams merged into feature pods built for agentic AI coding. Increased velocity 100% over 6 months.',
     parts: [
       'Domain knowledge as markdown, versioned in the repo',
       'Pairing and demos; skeptics convinced, not mandated',
