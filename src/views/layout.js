@@ -4,6 +4,8 @@ const GITHUB_URL = 'https://github.com/dougrosa0/a-dougs-life';
 // Every page names the apex as its canonical so search engines consolidate on one.
 const SITE_ORIGIN = 'https://a-dougs-life.com';
 
+// `path` is the page's path on the canonical origin. Pass null for something
+// that is not a page, such as an error screen, and no canonical is declared.
 function layout({ title, path, body }) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -11,8 +13,7 @@ function layout({ title, path, body }) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title ? `${title} - A Doug's Life` : "A Doug's Life"}</title>
-  <link rel="canonical" href="${SITE_ORIGIN}${path}">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+${path === null ? '' : `  <link rel="canonical" href="${SITE_ORIGIN}${path}">\n`}  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
