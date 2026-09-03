@@ -1,54 +1,83 @@
-# A Dougs Life
+# A Doug's Life
 
-A small, personal, read-only website — an ode to *A Bug's Life* and to digital minimalism.
-It shows a few things I'm into, starting with a list of books I've read. The whole
-point of this project is the project itself: a working example of how little you
-actually need to build and host something real.
+A small, read-only personal website, live at **[a-dougs-life.com](https://a-dougs-life.com)**.
+It is an ode to *A Bug's Life* and to digital minimalism: five pages about the things
+I am into, with no account to create, nothing to subscribe to, and nothing tracking you.
 
-Live philosophy: **four runtime dependencies, one file for a database, one container
-image that runs identically anywhere.** No cloud-provider lock-in, no framework
-sprawl, no build step.
+The point of the project is the project itself. It is a working answer to the question
+of how little you actually need to build something real and keep it running.
+
+**Two runtime dependencies. No database. No build step. One container image that runs
+the same anywhere.**
+
+## The pages
+
+| Path      | What it is                                              |
+| --------- | ------------------------------------------------------- |
+| `/`       | Who I am, in a paragraph                                |
+| `/life`   | A photo grid, thumbnails linking to full-size copies    |
+| `/work`   | A career timeline: what happened each year, and what I took from it |
+| `/habits` | The daily habits I hold myself to, and the goals behind them |
+| `/books`  | Everything I have read since 2019, split fun / learning |
 
 ## Stack
 
-- [Express](https://expressjs.com/) — HTTP server & routing
-- [express-session](https://www.npmjs.com/package/express-session) — cookie sessions (battle-tested, so auth cookies aren't hand-rolled)
-- [better-sqlite3](https://www.npmjs.com/package/better-sqlite3) — the entire database is one file
-- [dotenv](https://www.npmjs.com/package/dotenv) — loads `.env` for local dev
+- **[Express](https://expressjs.com/)** for HTTP and routing
+- **[dotenv](https://www.npmjs.com/package/dotenv)** to load `.env` in local development
+- **[sharp](https://www.npmjs.com/package/sharp)** as the only dev dependency, used by
+  the photo script and never shipped in the image
 
-No template engine, no CSS framework, no ORM, no build step. HTML is generated with
-plain JS template-literal view functions in `src/views/`; styling is a single
-hand-written `src/public/style.css`. Passwords are hashed with Node's built-in
-`crypto.scrypt` — no extra dependency needed for that either.
+No template engine, no CSS framework, no ORM, no bundler. HTML comes from plain
+template-literal functions in `src/views/`. Styling is one hand-written stylesheet.
+
+## Where the content lives
+
+There is no database and no admin interface. Every page's content is a plain array in
+the view that renders it, edited in a text editor and deployed by pushing:
+
+```js
+// src/views/books.js
+const BOOKS = [
+  { year: '2026', category: 'fun', title: 'Rhythm of War', author: 'Brandon Sanderson' },
+  ...
+];
+```
+
+`work.js`, `habits.js` and `life.js` follow the same shape. Each array has a comment
+above it explaining how it is ordered and what editing it does, so changing the site
+means changing one list.
 
 ## Project layout
 
 ```
 src/
-  server.js       entrypoint
-  app.js          express app wiring
-  db.js           SQLite connection + schema
-  auth.js         password hashing + session middleware
-  routes/         public.js, auth.js, admin.js
-  views/          template-literal HTML views
-  public/         style.css, favicon
+  server.js                entrypoint; reads PORT and listens
+  app.js                   express wiring, in mount order
+  middleware/
+    canonical-host.js      sends www to the apex
+  routes/
+    public.js              the five pages
+    health.js              /healthz, for Cloud Run's probes
+  views/                   template-literal HTML, one file per page
+    layout.js              the shared shell: head, nav, footer
+    escape.js              HTML escaping helper
+  public/                  style.css, favicon, robots.txt, sitemap.xml, photos/
 scripts/
-  create-admin.js CLI to generate admin credentials
-test/             node:test suite (no test framework dependency)
+  optimize-photos.js       camera originals to the two web sizes, EXIF stripped
+test/                      node:test suite, no test framework dependency
+infra/                     Terraform for the whole cloud footprint
+.github/workflows/ci.yml   test, build, push, gated deploy
 ```
 
 ## Local development
 
 ```bash
 npm install
-cp .env.example .env
-# fill in SESSION_SECRET (see the comment in .env.example for how to generate one)
-
-npm run create-admin   # prompts for a password, prints ADMIN_PASSWORD_HASH/SALT
-# paste those values into .env
-
-npm run dev             # http://localhost:3000, restarts on file changes
+npm run dev        # http://localhost:3000, restarts on file changes
 ```
+
+There is nothing to configure. `.env` is optional and the only value it holds is
+`PORT`; copy `.env.example` if you want to run on a different one.
 
 Run the tests with:
 
@@ -56,33 +85,76 @@ Run the tests with:
 npm test
 ```
 
-## Deploying
+The suite uses Node's built-in test runner, so there is no framework to install. It
+covers the view functions, the canonical-host middleware, and the SEO files, and it
+asserts a few decisions rather than just behaviour: that no page links to the admin
+interface that was removed, that every page carries a canonical tag pointing at the
+apex, and that no em dash survives into the copy.
 
-The app is packaged as a single Docker image with no host-specific assumptions —
-it runs the same on a VPS, a home server, or any PaaS that accepts a Dockerfile.
+## Adding photos
+
+```bash
+npm run optimize-photos ~/path/to/originals
+```
+
+Writes a square thumbnail and a size-capped full copy for each input, and strips EXIF
+on the way through. That last part matters more than the file size: phone photos carry
+GPS coordinates, and publishing those publishes where they were taken. Then add the new
+filenames to `ORDER` in `src/views/life.js` to place them in the grid. Anything present
+on disk but missing from that list is appended rather than dropped, so the page can
+never come out blank.
+
+## Deployment
+
+The app is one Docker image with no host-specific assumptions. It runs the same on a
+VPS, a home server, or any platform that accepts a Dockerfile:
 
 ```bash
 docker build -t a-dougs-life .
-docker run -d \
-  --name a-dougs-life \
-  -p 3000:3000 \
-  -v $(pwd)/data:/app/data \
-  --env-file .env \
-  a-dougs-life
+docker run -d --name a-dougs-life -p 3000:3000 a-dougs-life
 ```
 
-The SQLite file lives in the mounted `data/` volume, so it survives container
-restarts and redeploys. There is no separate database service to provision.
+No volumes, no environment file, no database to provision. The container is the whole
+application.
 
-Set real values for `SESSION_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`,
-and `ADMIN_PASSWORD_SALT` as environment variables on whatever host runs the
-container — never commit real values in `.env`.
+### What actually runs it
 
-## Future ideas
+Google Cloud Run, in front of a custom domain, with the entire footprint described by
+Terraform in [`infra/`](./infra). Pushing to `master` runs
+[the pipeline](./.github/workflows/ci.yml):
 
-Only books are supported today. An "about me" page, a projects/portfolio
-section, and a lightweight "now" page are natural next additions once this
-pattern (a table, an admin form, a public view) is proven out.
+1. **test** runs the unit suite.
+2. **build** builds the image, starts it, and requests every page.
+3. **push** publishes the image to Artifact Registry, tagged with the commit SHA.
+4. **deploy** releases a candidate revision that receives **no traffic**, requests every
+   page on its private tagged URL, and only then shifts traffic to it.
+
+A failed smoke test at step 4 leaves the previous revision serving, so a broken build
+cannot take the site down. GitHub authenticates to Google with Workload Identity
+Federation, so there is no service account key stored anywhere.
+
+## Decisions worth knowing about
+
+The reasoning behind the less obvious choices is written where you would hit it, as
+comments in the file that made the choice. The short version:
+
+- **The database was removed, not never added.** The site ran on SQLite and then
+  Postgres, with an admin login for editing content. Both went away in August 2026: for
+  five pages that one person edits, a text editor and a deploy beat a schema, an auth
+  layer, and a machine to run them on.
+- **Cloud Run reserves `/healthz` externally.** Google's front end answers it before the
+  request reaches the container, so the platform's own probes work while an external
+  curl gets a 404. The CI smoke test asks for real pages instead. See
+  `src/routes/health.js`.
+- **The generated `run.app` host is never redirected to the apex.** The deploy gate
+  smoke-tests a candidate on exactly that host, so redirecting it would fail every
+  deploy. See `src/middleware/canonical-host.js`.
+- **Terraform owns the service; CI owns the image.** An `ignore_changes` block on the
+  container image keeps `terraform apply` from reverting whatever CI last deployed. See
+  `infra/cloudrun.tf`.
+- **Cost is a design constraint.** Scaling to zero, a three-instance ceiling, and Cloud
+  Run's own domain mapping instead of a load balancer, whose forwarding rule alone would
+  cost more per month than everything else combined.
 
 ## License
 

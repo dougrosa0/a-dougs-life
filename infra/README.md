@@ -1,64 +1,58 @@
 # infra (main module)
 
-The full a-dougs-life cloud footprint, with **remote state** in the
-`a-dougs-life-tfstate` bucket (created by `infra/bootstrap`). Run
-`infra/bootstrap` first.
+The whole a-dougs-life cloud footprint. State lives remotely in the
+`a-dougs-life-tfstate` bucket, which `infra/bootstrap` creates, so run that module
+first.
+
+The site is static content compiled into a container image. There is no database, no
+VPC, and no secret material at runtime, which is why this module is as short as it is.
 
 ## What it creates
 
-- **Networking** (`network.tf`) — a custom VPC, a regional subnet for Cloud Run
-  Direct VPC egress, and firewall rules (Postgres 5432 reachable only from the
-  subnet; SSH 22 only via Google's IAP range).
-- **Database** (`database.tf`, `scripts/postgres-startup.sh`) — self-managed
-  Postgres on an Always-Free `e2-micro` VM. A startup script installs Postgres,
-  pulls the DB password from Secret Manager, and creates the `a_dougs_life`
-  database + `app` role. The VM has a reserved private IP (stable DATABASE_URL
-  host) and an ephemeral external IP used only for the one-time package install.
-- **Artifact Registry** (`artifact_registry.tf`) — the `adl` Docker repo.
-- **Secret Manager** (`secrets.tf`) — `database-url` (composed by Terraform),
-  `session-secret`, `admin-password-hash`, `admin-password-salt`, and
-  `db-password` (read by the VM).
-- **Cloud Run v2** (`cloudrun.tf`) — the service, reaching Postgres over the VPC
-  via Direct VPC egress, with secrets injected as env. Starts on a placeholder
-  image; `ignore_changes` hands image/traffic ownership to CI/CD.
-- **IAM** (`iam.tf`) — the `adl-run` runtime SA, `adl-deployer` CI SA, and
-  `adl-db` VM SA, each least-privilege.
-- **Workload Identity Federation** (`workload_identity.tf`) — GitHub OIDC trust
-  scoped to `dougrosa0/a-dougs-life`, bound to the deployer SA. No JSON keys.
+- **Cloud Run v2** (`cloudrun.tf`) is the service itself. Public ingress, scales to
+  zero, capped at three instances. It starts life on a placeholder image; the
+  `ignore_changes` block hands ownership of the image and the traffic split to CI/CD.
+- **Domain mapping** (`domain.tf`) serves the apex and `www` from the same service,
+  with Google-managed certificates.
+- **Artifact Registry** (`artifact_registry.tf`) is the `adl` Docker repository.
+- **IAM** (`iam.tf`) is the `adl-run` runtime service account, the `adl-deployer` CI
+  service account, and the Artifact Registry read grant the Cloud Run service agent
+  needs to pull images.
+- **Workload Identity Federation** (`workload_identity.tf`) trusts GitHub's OIDC
+  issuer, scoped to `dougrosa0/a-dougs-life` and bound to the deployer account. There
+  are no JSON keys anywhere.
 
 ## Cost
 
-~$3–4/mo, essentially all from the VM's external IPv4 charge. The `e2-micro`
-compute and 30 GB standard disk are Always-Free; Cloud Run scales to zero.
+Roughly a dollar a month, essentially all of it Artifact Registry storage. Cloud Run
+scales to zero and the free tier absorbs the traffic; the domain mapping is free, which
+is the reason it is used instead of a global external load balancer.
 
-## Apply (first time, by hand)
+## Apply
+
+Applied by hand, from a laptop. There is no Terraform pipeline.
 
 ```bash
-cp terraform.tfvars.example terraform.tfvars   # then fill in the 4 secret values
 terraform init      # uses the gcs backend
 terraform plan
-terraform apply     # VM boots + installs Postgres over ~1-2 min after apply
+terraform apply
 ```
 
-`terraform.tfvars` is gitignored — never commit real secret values.
+`terraform.tfvars` is gitignored. It is not needed for a normal apply; every variable
+in `variables.tf` has a working default.
 
-## Operating the DB
+## Two things that will bite you
 
-- SSH (no public port 22): `gcloud compute ssh adl-postgres --zone us-central1-a --tunnel-through-iap`
-- Postgres version is whatever Debian 12 ships (15.x). Schema (SERIAL,
-  timestamptz) is version-agnostic.
-- **Durability is your responsibility now** (self-managed). Data lives on the
-  VM boot disk. A follow-up worth doing: a nightly `pg_dump` to a GCS bucket.
+**The domain must be verified before the mapping will apply.** Ownership is proved with
+a TXT record through Search Console, and Terraform cannot do that step for you. Without
+it, `apply` fails with a 403 on the domain mapping.
 
-## Outputs → GitHub (Phase 4)
+**In Cloudflare, the DNS records must be grey-cloud (DNS only).** Proxying them
+intercepts Google's domain-control validation and the managed certificate never issues.
 
-`terraform output` prints the Cloud Run URL, Artifact Registry path, DB VM name,
-DB private IP, WIF provider resource name, and deployer SA email.
+## Outputs
 
-## ⚠️ Phase 5 note: CI migrations vs. private DB
-
-The DB is only reachable from inside the VPC, so a GitHub-hosted runner can't run
-migrations against it directly. Phase 5 will run migrations from inside the VPC —
-most likely a **Cloud Run Job** using Direct VPC egress (needs an image that
-includes `node-pg-migrate`, which is currently a devDependency excluded from the
-runtime image). Flagging so the private-DB choice is deliberate.
+`terraform output` prints the Cloud Run URL, the Artifact Registry path, the WIF
+provider resource name, the deployer service account email, and the DNS records to
+create at the registrar. The first four are copied into GitHub repository variables so
+the workflow can deploy; they are not secrets, because WIF is keyless.
