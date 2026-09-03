@@ -1,14 +1,6 @@
 # A Doug's Life
 
-A small, read-only personal website, live at **[a-dougs-life.com](https://a-dougs-life.com)**.
-It is an ode to *A Bug's Life* and to digital minimalism: five pages about the things
-I am into, with no account to create, nothing to subscribe to, and nothing tracking you.
-
-The point of the project is the project itself. It is a working answer to the question
-of how little you actually need to build something real and keep it running.
-
-**Two runtime dependencies. No database. No build step. One container image that runs
-the same anywhere.**
+A small personal website, live at [a-dougs-life.com](https://a-dougs-life.com).
 
 ## The pages
 
