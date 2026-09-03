@@ -72,12 +72,6 @@ function booksPage() {
     .join('');
 
   const body = `
-    <h2>Books I've Been Reading</h2>
-    <p class="lede">
-      What I have read since 2019, pulled from my Kindle history. Fiction on the
-      left, everything else on the right.
-    </p>
-
     <ul class="shelves">
       <li class="shelf-head">
         <i class="year"></i>

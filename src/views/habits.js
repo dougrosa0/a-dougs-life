@@ -69,10 +69,6 @@ function habitsPage() {
   const habits = HABITS.map((h) => `<li><b>${h.name}:</b> ${h.detail}</li>`).join('');
 
   const body = `
-    <p>
-      The goals I want to achieve in my life and some habits I keep to help get me there.
-    </p>
-
     <h2>Goals</h2>
     <ul class="category-list">${goals}</ul>
 
