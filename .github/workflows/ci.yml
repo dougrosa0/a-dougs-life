@@ -29,19 +29,29 @@ jobs:
       - name: Test
         run: npm test
 
-  # 2. Build the runtime image and smoke-test it.
+  # 2. Build the image once, smoke-test that image, then push that same image.
+  #    Build and push are one job on purpose: when they were separate jobs the
+  #    push job rebuilt from source, so the image that shipped was never the
+  #    image the smoke test proved. Retagging keeps them the same bytes.
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      # The pushed image by digest, so deploy names the exact artifact tested
+      # here instead of resolving a tag that could have moved underneath it.
+      image: ${{ steps.push.outputs.image }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Build app image
         run: docker build -t adl-app:ci -f Dockerfile .
+
       - name: Start the app image
         run: |
           docker run -d --name adl-app --network host \
             -e PORT=8080 \
             adl-app:ci
+
       - name: Smoke-test every page
         run: |
           for i in $(seq 1 20); do
@@ -56,37 +66,48 @@ jobs:
             curl -fsS -o /dev/null "http://localhost:8080$path"
           done
           echo "all pages OK"
+
       - name: Teardown
         if: always()
         run: docker rm -f adl-app || true
 
-  # 3. Push the image to Artifact Registry (master only).
-  push:
-    needs: build
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      # Everything below runs only on master. A pull request builds the image
+      # and proves it, but nothing leaves the runner.
       - uses: google-github-actions/auth@v2
+        if: github.ref == 'refs/heads/master'
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOYER_SA }}
+
       - uses: google-github-actions/setup-gcloud@v2
+        if: github.ref == 'refs/heads/master'
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
+
       - name: Configure Docker for Artifact Registry
+        if: github.ref == 'refs/heads/master'
         run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
-      - name: Build & push app image
+
+      - name: Tag and push the image that was just tested
+        id: push
+        if: github.ref == 'refs/heads/master'
         run: |
           APP="${{ vars.GCP_AR_REPO }}/app"
-          docker build -t "$APP:${{ github.sha }}" -t "$APP:latest" -f Dockerfile .
+          docker tag adl-app:ci "$APP:${{ github.sha }}"
+          docker tag adl-app:ci "$APP:latest"
           docker push "$APP:${{ github.sha }}"
           docker push "$APP:latest"
 
-  # 4. Deploy a no-traffic candidate, smoke-test it, then shift traffic.
+          # Ask the registry what it actually stored and hand that digest to
+          # the deploy job. A digest cannot drift the way a tag can.
+          DIGEST="$(docker inspect --format='{{index .RepoDigests 0}}' "$APP:${{ github.sha }}" | cut -d@ -f2)"
+          echo "image=$APP@$DIGEST" >> "$GITHUB_OUTPUT"
+          echo "pushed $APP@$DIGEST"
+
+  # 3. Deploy a no-traffic candidate, smoke-test it, then shift traffic.
   #    A failed smoke test leaves the old revision serving.
   deploy:
-    needs: push
+    needs: build
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
@@ -103,7 +124,7 @@ jobs:
         run: |
           SHORT="$(echo "${{ github.sha }}" | cut -c1-8)"
           gcloud run deploy "${{ vars.CLOUD_RUN_SERVICE }}" \
-            --image "${{ vars.GCP_AR_REPO }}/app:${{ github.sha }}" \
+            --image "${{ needs.build.outputs.image }}" \
             --region "${{ vars.GCP_REGION }}" \
             --no-traffic \
             --tag "candidate-$SHORT"
