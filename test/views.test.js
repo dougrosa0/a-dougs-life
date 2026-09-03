@@ -1,10 +1,11 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { homePage } = require('../src/views/home');
-const { lifePage } = require('../src/views/life');
+const { lifePage, ORDER, PHOTOS } = require('../src/views/life');
 const { workPage } = require('../src/views/work');
 const { habitsPage } = require('../src/views/habits');
 const { booksPage, BOOKS } = require('../src/views/books');
+const { notFoundPage, errorPage } = require('../src/views/errors');
 
 const PAGES = [
   ['home', homePage],
@@ -47,6 +48,32 @@ test('every photo on the life page links to its full-size copy', () => {
   assert.ok(thumbs.length > 0, 'no photos rendered');
   for (const name of thumbs) {
     assert.ok(html.includes(`href="/photos/full/${name}"`), `${name} has no full-size link`);
+  }
+});
+
+// The whole page is photographs, so they are the content, not decoration.
+// An empty alt would hand a screen reader a page with nothing on it.
+test('every photo in the grid is described', () => {
+  const html = lifePage();
+  const alts = [...html.matchAll(/<img [^>]*alt="([^"]*)"/g)].map((m) => m[1]);
+
+  assert.equal(alts.length, PHOTOS.length, 'an image rendered without an alt attribute');
+
+  for (const photo of ORDER) {
+    assert.ok(photo.alt, `${photo.file} has no description`);
+    assert.ok(alts.includes(photo.alt), `${photo.file} did not render its description`);
+  }
+});
+
+// These render in the site shell so a wrong turn still shows the nav, but they
+// are not pages and must not tell a search engine otherwise.
+test('error pages keep the shell and claim no canonical URL', () => {
+  for (const [name, render] of [['not-found', notFoundPage], ['error', errorPage]]) {
+    const html = render();
+    assert.match(html, /^<!DOCTYPE html>/, `${name} is missing a doctype`);
+    assert.ok(html.includes('href="/books"'), `${name} lost the nav`);
+    assert.ok(!html.includes('rel="canonical"'), `${name} declares a canonical URL`);
+    assert.ok(!html.includes('—'), `${name} contains an em dash`);
   }
 });
 
