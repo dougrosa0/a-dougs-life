@@ -6,9 +6,9 @@ const { escapeHtml } = require('./escape');
 const THUMB_DIR = path.join(__dirname, '..', 'public', 'photos', 'thumb');
 
 // Photos too wide to survive a square crop. Their thumbnail is cut 2:1 instead
-// and the tile spans two columns. The family line-up is nearly as wide as its
-// own frame, so a square would always lose whoever stands on the ends.
-const WIDE = new Set(['photo-19.jpg']);
+// and the tile spans two columns. Both are group shots that fill their own
+// frame edge to edge, so a square would always lose whoever sits on the ends.
+const WIDE = new Set(['photo-19.jpg', 'photo-21.jpg']);
 
 // Display order, and what each photo shows. Reorder these lines to reorder the
 // grid. The description becomes the alt text, so it is read aloud by a screen
@@ -17,8 +17,9 @@ const WIDE = new Set(['photo-19.jpg']);
 // this list is appended at the end, so re-running scripts/optimize-photos.js
 // can never blank the page.
 const ORDER = [
-  // The three that open the page.
+  // The four that open the page.
   { file: 'photo-19.jpg', alt: 'Family lined up on the beach' },
+  { file: 'photo-21.jpg', alt: 'The family crowded onto one couch, the youngest two out front' },
   { file: 'photo-02.jpg', alt: 'A couple dancing in the valley' },
   { file: 'photo-03.jpg', alt: 'Summit selfie' },
 
@@ -29,11 +30,14 @@ const ORDER = [
   { file: 'photo-06.jpg', alt: 'The ring, at sunset' },
   { file: 'photo-07.jpg', alt: 'An alpine lake holding the reflection of the peaks' },
 
+  // A pig who lives among the trailers, and a window in the Dolomites.
+  { file: 'photo-22.jpg', alt: 'A black pig crossing a yard between two vintage trailers' },
+  { file: 'photo-23.jpg', alt: 'The Dolomites through the window of a wood-panelled room' },
+
   // San Diego, oldest first.
   { file: 'photo-15.jpg', alt: 'An OK sign thrown from the water, off the palms' },
   { file: 'photo-17.jpg', alt: 'A scooter with a surfboard rack' },
   { file: 'photo-10.jpg', alt: 'In a wetsuit, out past the break' },
-  { file: 'photo-14.jpg', alt: 'Carrying a board down to the beach' },
   { file: 'photo-16.jpg', alt: 'A paraglider over the cliffs' },
   { file: 'photo-11.jpg', alt: 'Rollerblading up the coast highway' },
 
