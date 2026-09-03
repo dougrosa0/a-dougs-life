@@ -34,7 +34,7 @@ ${path === null ? '' : `  <link rel="canonical" href="${SITE_ORIGIN}${path}">\n`
   </main>
   <footer>
     <hr>
-    <p><small>Source code on <a href="${GITHUB_URL}" rel="noopener">GitHub</a>. Best viewed with any browser.</small></p>
+    <p><small>Source code on <a href="${GITHUB_URL}" rel="noopener">GitHub</a>.</small></p>
   </footer>
 </body>
 </html>`;

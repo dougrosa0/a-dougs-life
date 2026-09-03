@@ -1,7 +1,7 @@
 {
   "name": "a-dougs-life",
   "version": "1.0.0",
-  "description": "A personal, read-only site about the things Doug is into — an ode to digital minimalism.",
+  "description": "A small personal website, live at a-dougs-life.com",
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {

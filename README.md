@@ -133,29 +133,6 @@ A failed smoke test at step 4 leaves the previous revision serving, so a broken 
 cannot take the site down. GitHub authenticates to Google with Workload Identity
 Federation, so there is no service account key stored anywhere.
 
-## Decisions worth knowing about
-
-The reasoning behind the less obvious choices is written where you would hit it, as
-comments in the file that made the choice. The short version:
-
-- **The database was removed, not never added.** The site ran on SQLite and then
-  Postgres, with an admin login for editing content. Both went away in August 2026: for
-  five pages that one person edits, a text editor and a deploy beat a schema, an auth
-  layer, and a machine to run them on.
-- **Cloud Run reserves `/healthz` externally.** Google's front end answers it before the
-  request reaches the container, so the platform's own probes work while an external
-  curl gets a 404. The CI smoke test asks for real pages instead. See
-  `src/routes/health.js`.
-- **The generated `run.app` host is never redirected to the apex.** The deploy gate
-  smoke-tests a candidate on exactly that host, so redirecting it would fail every
-  deploy. See `src/middleware/canonical-host.js`.
-- **Terraform owns the service; CI owns the image.** An `ignore_changes` block on the
-  container image keeps `terraform apply` from reverting whatever CI last deployed. See
-  `infra/cloudrun.tf`.
-- **Cost is a design constraint.** Scaling to zero, a three-instance ceiling, and Cloud
-  Run's own domain mapping instead of a load balancer, whose forwarding rule alone would
-  cost more per month than everything else combined.
-
 ## License
 
 [MIT](./LICENSE)
