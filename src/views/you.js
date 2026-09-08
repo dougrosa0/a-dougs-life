@@ -238,14 +238,6 @@ function youPage(req, server) {
   const builtMs = Number(process.hrtime.bigint() - startedAt) / 1e6;
 
   const body = `
-    <h2>About you</h2>
-    <p>
-      Every other page here is the same for everyone. This one is not. Below is what your
-      browser volunteered when it asked for this page, and what the container that answered
-      knows about itself. There is no JavaScript on this page, or anywhere on this site, so
-      all of it arrived in the request itself.
-    </p>
-
     <h2>What your browser told me</h2>
     ${visitor}
 
@@ -254,19 +246,9 @@ function youPage(req, server) {
 
     <h2>This request</h2>
     ${requestTable(req, builtMs)}
-
-    <h2>What happens to all of it</h2>
-    <p>
-      Nothing, on my side. There is no database, no analytics and no cookie. The page is
-      built out of your request and thrown away when the response ends, which is why
-      reloading changes the numbers. Google keeps its own record though: Cloud Run writes a
-      request log for every hit, with your IP address, the path and your user agent, and
-      holds it for 30 days. I can read that, and short of moving off Cloud Run I have no way
-      to turn it off.
-    </p>
   `;
 
-  return layout({ title: 'About you', path: null, body });
+  return layout({ title: 'Runtime info', path: null, body });
 }
 
 module.exports = { youPage };
