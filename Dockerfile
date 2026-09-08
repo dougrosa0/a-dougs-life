@@ -10,6 +10,12 @@ COPY src ./src
 ENV PORT=3000
 EXPOSE 3000
 
+# The commit this image was built from, so /you can link the running code back
+# to its source. Last, so that changing it never invalidates the npm ci layer.
+# CI passes it; a hand-built image keeps the default and /you drops the row.
+ARG GIT_SHA=unknown
+ENV GIT_SHA=$GIT_SHA
+
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:'+(process.env.PORT||3000)+'/healthz', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 

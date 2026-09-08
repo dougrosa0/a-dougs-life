@@ -43,8 +43,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # GIT_SHA is baked in here rather than set at deploy time, so the image
+      # that gets smoke-tested below is the same artifact that ships, and /you
+      # names the commit it was actually built from.
       - name: Build app image
-        run: docker build -t adl-app:ci -f Dockerfile .
+        run: docker build --build-arg GIT_SHA=${{ github.sha }} -t adl-app:ci -f Dockerfile .
 
       - name: Start the app image
         run: |
@@ -61,7 +64,7 @@ jobs:
             fi
             sleep 2
           done
-          for path in / /life /work /habits /books; do
+          for path in / /life /work /habits /books /you; do
             echo "GET $path"
             curl -fsS -o /dev/null "http://localhost:8080$path"
           done
@@ -139,7 +142,7 @@ jobs:
           # Cloud Run's front end reserves /healthz externally (its own probes
           # still hit it internally to gate readiness), so smoke-test the real
           # public routes instead.
-          for path in / /life /work /habits /books; do
+          for path in / /life /work /habits /books /you; do
             echo "GET $path"
             curl -fsS -o /dev/null "${{ steps.candidate.outputs.url }}$path"
           done
