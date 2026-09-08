@@ -4,6 +4,8 @@ const { canonicalHost } = require('./middleware/canonical-host');
 const { securityHeaders } = require('./middleware/security-headers');
 const { createPublicRouter } = require('./routes/public');
 const { createHealthRouter } = require('./routes/health');
+const { createYouRouter } = require('./routes/you');
+const { countRequests } = require('./server-info');
 const { notFoundPage, errorPage } = require('./views/errors');
 
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -27,11 +29,18 @@ function createApp() {
   // First, so every response carries them: pages, redirects, static files and
   // the probe endpoint alike.
   app.use(securityHeaders());
+
+  // Ahead of everything except the headers, so /you can report a count that
+  // includes the request asking for it. Cloud Run's probes are excluded inside,
+  // otherwise no container would ever look like it had served nobody.
+  app.use(countRequests());
+
   app.use(createHealthRouter());
   app.use(canonicalHost());
   app.use('/photos', express.static(path.join(PUBLIC_DIR, 'photos'), PHOTO_CACHE));
   app.use(express.static(PUBLIC_DIR, ASSET_CACHE));
   app.use(createPublicRouter());
+  app.use(createYouRouter());
 
   // Anything that reaches here matched no page and no file.
   app.use((req, res) => {
