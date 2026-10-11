@@ -5,7 +5,7 @@ const { layout } = require('./layout');
 const GOALS = [
   'Make someone\'s day better',
   'Be kind to myself',
-  'In no particular order, be a great son, brother, friend, partner, leader, engineer, and one day, father',
+  'Be a great son, brother, friend, partner, leader, engineer, and one day, father (in no particular order)',
 ];
 
 // Static list — edit these freely. `name` is the habit, `detail` is a short note.
