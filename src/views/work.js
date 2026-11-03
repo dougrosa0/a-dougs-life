@@ -7,7 +7,12 @@ const { layout } = require('./layout');
 const TIMELINE = [
   {
     year: '2026',
-    lead: 'Current role: Software Engineering Manager.',
+    lead: 'Current role: Software Engineering Manager at WHOOP.',
+    what: 'Left PAR Technology and started in November, working on the sleep and cardio products.',
+  },
+  {
+    year: '2026',
+    lead: 'Software Engineering Manager at PAR.',
     what:
       'Two teams merged into feature pods built for agentic AI coding. Increased velocity 100% over 6 months.',
     parts: [
